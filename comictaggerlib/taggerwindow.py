@@ -188,6 +188,8 @@ class TaggerWindow(QtWidgets.QMainWindow):
         validator = QtGui.QIntValidator(1900, datetime.date.today().year + 15, self)
         self.lePubYear.setValidator(validator)
 
+        self.leSeriesPubYear.setValidator(validator)
+
         validator = QtGui.QIntValidator(1, 12, self)
         self.lePubMonth.setValidator(validator)
 
@@ -810,6 +812,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
         assignText(self.lePubMonth, md.month)
         assignText(self.lePubYear, md.year)
         assignText(self.lePubDay, md.day)
+        assignText(self.leSeriesPubYear, str(md.seriesYear or "").lstrip("0"))
         assignText(self.leGenre, md.genre)
         assignText(self.leImprint, md.imprint)
         assignText(self.teComments, md.comments)
@@ -935,6 +938,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
         md.month = utils.xlate(self.lePubMonth.text(), True)
         md.year = utils.xlate(self.lePubYear.text(), True)
         md.day = utils.xlate(self.lePubDay.text(), True)
+        md.seriesYear = utils.xlate(self.leSeriesPubYear.text(), "int")
         md.criticalRating = utils.xlate(self.leCriticalRating.text(), True)
         md.alternateCount = utils.xlate(self.leAltIssueCount.text(), True)
 
@@ -988,6 +992,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
             row += 1
 
         md.pages = self.pageListEditor.getPageList()
+
         self.metadata = md
 
     def useFilename(self):
