@@ -247,6 +247,8 @@ class TaggerWindow(QtWidgets.QMainWindow):
         self.fileSelectionList.addAppAction(self.actionRemoveAuto)
         self.fileSelectionList.addAppAction(self.actionRepackage)
 
+        self.btnAutoImprint.clicked.connect(self.autoImprint)
+
         if len(file_list) != 0:
             self.fileSelectionList.addPathList(file_list)
 
@@ -1848,6 +1850,9 @@ class TaggerWindow(QtWidgets.QMainWindow):
             if cv_md is not None:
                 md.overlay(cv_md)
 
+                if self.settings.auto_imprint:
+                    md.fixPublisher()
+
                 if not ca.writeMetadata(md, self.save_data_style):
                     match_results.writeFailures.append(ca.path)
                     self.autoTagLog("Save failed ;-(\n")
@@ -2199,3 +2204,8 @@ class TaggerWindow(QtWidgets.QMainWindow):
             # self.show()
             self.setWindowFlags(flags)
             self.show()
+
+    def autoImprint(self):
+        self.formToMetadata()
+        self.metadata.fixPublisher()
+        self.metadataToForm()
