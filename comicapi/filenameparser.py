@@ -113,7 +113,7 @@ class FileNameParser:
             word_list = word_list[1:]
         else:
             # only one word??  just bail.
-            return issue, start, end
+            return word_list[0][0], start, end
 
         # Now try to search for the likely issue number word in the list
 
