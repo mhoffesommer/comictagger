@@ -812,7 +812,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
         assignText(self.lePubMonth, md.month)
         assignText(self.lePubYear, md.year)
         assignText(self.lePubDay, md.day)
-        assignText(self.leSeriesPubYear, str(md.seriesYear or "").lstrip("0"))
+        assignText(self.leSeriesPubYear, md.seriesYear)
         assignText(self.leGenre, md.genre)
         assignText(self.leImprint, md.imprint)
         assignText(self.teComments, md.comments)

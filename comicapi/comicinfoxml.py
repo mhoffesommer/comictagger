@@ -229,7 +229,7 @@ class ComicInfoXml:
         md.year = utils.xlate(get('Year'), True)
         md.month = utils.xlate(get('Month'), True)
         md.day = utils.xlate(get('Day'), True)
-        md.seriesYear = utils.xlate('SeriesYear', True)
+        md.seriesYear = utils.xlate(get('SeriesYear'), True)
         md.publisher = utils.xlate(get('Publisher'))
         md.imprint = utils.xlate(get('Imprint'))
         md.genre = utils.xlate(get('Genre'))
