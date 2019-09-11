@@ -25,6 +25,7 @@ import json
 import webbrowser
 import re
 import pickle
+import datetime
 #import signal
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
@@ -51,6 +52,7 @@ from .cbltransformer import CBLTransformer
 from .renamewindow import RenameWindow
 from .exportwindow import ExportWindow, ExportConflictOpts
 from .issueidentifier import IssueIdentifier
+from .issuestring import IssueString
 from .autotagstartwindow import AutoTagStartWindow
 from .autotagprogresswindow import AutoTagProgressWindow
 from .autotagmatchwindow import AutoTagMatchWindow
@@ -86,7 +88,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
 
     def __init__(self, file_list, settings, parent=None, opts=None):
         super(TaggerWindow, self).__init__(parent)
-        
+
         uic.loadUi(ComicTaggerSettings.getUIFile('taggerwindow.ui'), self)
         self.settings = settings
 
@@ -183,7 +185,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
         self.resetApp()
 
         # set up some basic field validators
-        validator = QtGui.QIntValidator(1900, 2099, self)
+        validator = QtGui.QIntValidator(1900, datetime.date.today().year + 15, self)
         self.lePubYear.setValidator(validator)
 
         validator = QtGui.QIntValidator(1, 12, self)
@@ -295,7 +297,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
 
         self.setWindowIcon(
             QtGui.QIcon(ComicTaggerSettings.getGraphic('app.png')))
-        
+
         if self.comic_archive is None:
             self.setWindowTitle(self.appName)
         else:
@@ -611,7 +613,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
             )
 
         local = QUrl(str(absCFURL[0])).toLocalFile()
-        
+
         return local
 
     def dropEvent(self, event):
@@ -790,14 +792,12 @@ class TaggerWindow(QtWidgets.QMainWindow):
         for child in widget.children():
             self.clearChildren(child)
 
+    # Copy all of the metadata object into to the form.
+    # Merging of metadata should be done via the overlay function
     def metadataToForm(self):
-        # copy the the metadata object into to the form
-
-        # helper func
         def assignText(field, value):
             if value is not None:
                 field.setText(str(value))
-
         md = self.metadata
 
         assignText(self.leSeries, md.series)
@@ -839,23 +839,33 @@ class TaggerWindow(QtWidgets.QMainWindow):
                 self.cbMaturityRating.setEditText(md.maturityRating)
             else:
                 self.cbMaturityRating.setCurrentIndex(i)
+        else:
+            self.cbMaturityRating.setCurrentIndex(0)
 
         if md.language is not None:
             i = self.cbLanguage.findData(md.language)
             self.cbLanguage.setCurrentIndex(i)
+        else:
+            self.cbLanguage.setCurrentIndex(0)
 
         if md.country is not None:
             i = self.cbCountry.findText(md.country)
             self.cbCountry.setCurrentIndex(i)
+        else:
+            self.cbCountry.setCurrentIndex(0)
 
         if md.manga is not None:
             i = self.cbManga.findData(md.manga)
             self.cbManga.setCurrentIndex(i)
+        else:
+            self.cbManga.setCurrentIndex(0)
 
-        if md.blackAndWhite is not None and md.blackAndWhite:
+        if md.blackAndWhite != None and md.blackAndWhite:
             self.cbBW.setChecked(True)
+        else:
+            self.cbBW.setChecked(False)
 
-        assignText(self.teTags, utils.listToString(md.tags))
+        self.teTags.setText(utils.listToString(md.tags))
 
         # !!! Should we clear the credits table or just avoid duplicates?
         while self.twCredits.rowCount() > 0:
@@ -914,58 +924,47 @@ class TaggerWindow(QtWidgets.QMainWindow):
         return False
 
     def formToMetadata(self):
-
-        # helper func
-        def xlate(data, type_str):
-            s = "{0}".format(data).strip()
-            if s == "":
-                return None
-            elif type_str == "str":
-                return s
-            else:
-                return int(s)
-
         # copy the data from the form into the metadata
-        md = self.metadata
-        md.series = xlate(self.leSeries.text(), "str")
-        md.issue = xlate(self.leIssueNum.text(), "str")
-        md.issueCount = xlate(self.leIssueCount.text(), "int")
-        md.volume = xlate(self.leVolumeNum.text(), "int")
-        md.volumeCount = xlate(self.leVolumeCount.text(), "int")
-        md.title = xlate(self.leTitle.text(), "str")
-        md.publisher = xlate(self.lePublisher.text(), "str")
-        md.month = xlate(self.lePubMonth.text(), "int")
-        md.year = xlate(self.lePubYear.text(), "int")
-        md.day = xlate(self.lePubDay.text(), "int")
-        md.genre = xlate(self.leGenre.text(), "str")
-        md.imprint = xlate(self.leImprint.text(), "str")
-        md.comments = xlate(self.teComments.toPlainText(), "str")
-        md.notes = xlate(self.teNotes.toPlainText(), "str")
-        md.criticalRating = xlate(self.leCriticalRating.text(), "int")
-        md.maturityRating = xlate(self.cbMaturityRating.currentText(), "str")
+        md = GenericMetadata()
+        md.isEmpty = False
+        md.alternateNumber = IssueString(self.leAltIssueNum.text()).asString()
+        md.issue = IssueString(self.leIssueNum.text()).asString()
+        md.issueCount = utils.xlate(self.leIssueCount.text(), True)
+        md.volume = utils.xlate(self.leVolumeNum.text(), True)
+        md.volumeCount = utils.xlate(self.leVolumeCount.text(), True)
+        md.month = utils.xlate(self.lePubMonth.text(), True)
+        md.year = utils.xlate(self.lePubYear.text(), True)
+        md.day = utils.xlate(self.lePubDay.text(), True)
+        md.criticalRating = utils.xlate(self.leCriticalRating.text(), True)
+        md.alternateCount = utils.xlate(self.leAltIssueCount.text(), True)
 
-        md.storyArc = xlate(self.leStoryArc.text(), "str")
-        md.scanInfo = xlate(self.leScanInfo.text(), "str")
-        md.seriesGroup = xlate(self.leSeriesGroup.text(), "str")
-        md.alternateSeries = xlate(self.leAltSeries.text(), "str")
-        md.alternateNumber = xlate(self.leAltIssueNum.text(), "int")
-        md.alternateCount = xlate(self.leAltIssueCount.text(), "int")
-        md.webLink = xlate(self.leWebLink.text(), "str")
-        md.characters = xlate(self.teCharacters.toPlainText(), "str")
-        md.teams = xlate(self.teTeams.toPlainText(), "str")
-        md.locations = xlate(self.teLocations.toPlainText(), "str")
+        md.series = self.leSeries.text()
+        md.title = self.leTitle.text()
+        md.publisher = self.lePublisher.text()
+        md.genre = self.leGenre.text()
+        md.imprint = self.leImprint.text()
+        md.comments = self.teComments.toPlainText()
+        md.notes = self.teNotes.toPlainText()
+        md.maturityRating = self.cbMaturityRating.currentText()
 
-        md.format = xlate(self.cbFormat.currentText(), "str")
-        md.country = xlate(self.cbCountry.currentText(), "str")
+        md.storyArc = self.leStoryArc.text()
+        md.scanInfo = self.leScanInfo.text()
+        md.seriesGroup = self.leSeriesGroup.text()
+        md.alternateSeries = self.leAltSeries.text()
+        md.webLink = self.leWebLink.text()
+        md.characters = self.teCharacters.toPlainText()
+        md.teams = self.teTeams.toPlainText()
+        md.locations = self.teLocations.toPlainText()
 
-        langiso = self.cbLanguage.itemData(self.cbLanguage.currentIndex())
-        md.language = xlate(langiso, "str")
+        md.format = self.cbFormat.currentText()
+        md.country = self.cbCountry.currentText()
 
-        manga_code = self.cbManga.itemData(self.cbManga.currentIndex())
-        md.manga = xlate(manga_code, "str")
+        md.language = utils.xlate(self.cbLanguage.itemData(self.cbLanguage.currentIndex()))
+
+        md.manga = utils.xlate(self.cbManga.itemData(self.cbManga.currentIndex()))
 
         # Make a list from the coma delimited tags string
-        tmp = xlate(self.teTags.toPlainText(), "str")
+        tmp = self.teTags.toPlainText()
         if tmp is not None:
             def striplist(l):
                 return([x.strip() for x in l])
@@ -989,6 +988,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
             row += 1
 
         md.pages = self.pageListEditor.getPageList()
+        self.metadata = md
 
     def useFilename(self):
         if self.comic_archive is not None:
@@ -1198,11 +1198,11 @@ class TaggerWindow(QtWidgets.QMainWindow):
 
     def updateCreditColors(self):
         #!!!ATB qt5 porting TODO
-        #return 
+        #return
         inactive_color = QtGui.QColor(255, 170, 150)
         active_palette = self.leSeries.palette()
         active_color = active_palette.color(QtGui.QPalette.Base)
-        
+
         inactive_brush = QtGui.QBrush(inactive_color)
         active_brush = QtGui.QBrush(active_color)
 

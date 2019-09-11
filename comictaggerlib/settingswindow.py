@@ -44,13 +44,13 @@ linuxRarHelp = """
                <a href="https://www.rarlab.com/download.htm">here</a></span>,
                and install in your path. </p></body></html>
                """
-               
+
 macRarHelp = """
                  <html><head/><body><p>To write to CBR/RAR archives,
                  you will need the rar tool.  The easiest way to get this is
                  to install <span style=" text-decoration: underline; color:#0000ff;">
                  <a href="https://brew.sh/">homebrew</a></span>.
-                 </p>Once homebrew is installed, run: <b>brew install caskroom/cask/rar</b></body></html>  
+                 </p>Once homebrew is installed, run: <b>brew install caskroom/cask/rar</b></body></html>
                 """
 
 windowsUnrarHelp = """
@@ -70,7 +70,7 @@ linuxUnrarHelp = """
                <a href="https://www.rarlab.com/rar_add.htm">here</a></span>
                for the UnRAR source (which is easy to compile on Linux). </p></body></html>
                """
-               
+
 macUnrarHelp = """
                  <html><head/><body><p>To read CBR/RAR archives,
                  you will need the unrar library.  The easiest way to get this is
@@ -92,13 +92,13 @@ class SettingsWindow(QtWidgets.QDialog):
 
         self.settings = settings
         self.name = "Settings"
-        
+
         self.priorUnrarLibPath = self.settings.unrar_lib_path
 
         if self.settings.haveOwnUnrarLib():
             # We have our own unrarlib, so no need for this GUI
             self.grpBoxUnrar.hide()
-            
+
         if platform.system() == "Windows":
             self.lblRarHelp.setText(windowsRarHelp)
             self.lblUnrarHelp.setText(windowsUnrarHelp)
@@ -111,7 +111,7 @@ class SettingsWindow(QtWidgets.QDialog):
             # Mac file dialog hides "/usr" and others, so allow user to type
             self.leUnrarLibPath.setReadOnly(False)
             self.leRarExePath.setReadOnly(False)
-                     
+
             self.lblRarHelp.setText(macRarHelp)
             self.lblUnrarHelp.setText(macUnrarHelp)
             self.name = "Preferences"
@@ -152,6 +152,7 @@ class SettingsWindow(QtWidgets.QDialog):
         self.btnClearCache.clicked.connect(self.clearCache)
         self.btnResetSettings.clicked.connect(self.resetSettings)
         self.btnTestKey.clicked.connect(self.testAPIKey)
+        self.btnTemplateHelp.clicked.connect(self.showTemplateHelp)
 
     def settingsToForm(self):
 
@@ -205,12 +206,15 @@ class SettingsWindow(QtWidgets.QDialog):
             self.cbxSmartCleanup.setCheckState(QtCore.Qt.Checked)
         if self.settings.rename_extension_based_on_archive:
             self.cbxChangeExtension.setCheckState(QtCore.Qt.Checked)
+        if self.settings.rename_move_dir:
+            self.cbxMoveFiles.setCheckState(QtCore.Qt.Checked)
+        self.leDirectory.setText(self.settings.rename_dir)
 
     def accept(self):
 
         # Copy values from form to settings and save
         self.settings.rar_exe_path = str(self.leRarExePath.text())
-        
+
         # Don't accept the form info if we have our own unrar lib
         if not self.settings.haveOwnUnrarLib():
             self.settings.unrar_lib_path = str(self.leUnrarLibPath.text())
@@ -222,7 +226,7 @@ class SettingsWindow(QtWidgets.QDialog):
         if self.settings.unrar_lib_path:
             os.environ["UNRAR_LIB_PATH"] = self.settings.unrar_lib_path
             # This doesn't do anything... we need to restart!
-            
+
         if not str(self.leNameLengthDeltaThresh.text()).isdigit():
             self.leNameLengthDeltaThresh.setText("0")
 
@@ -258,6 +262,8 @@ class SettingsWindow(QtWidgets.QDialog):
             self.leIssueNumPadding.text())
         self.settings.rename_use_smart_string_cleanup = self.cbxSmartCleanup.isChecked()
         self.settings.rename_extension_based_on_archive = self.cbxChangeExtension.isChecked()
+        self.settings.rename_move_dir = self.cbxMoveFiles.isChecked()
+        self.settings.rename_dir = self.leDirectory.text()
 
         self.settings.save()
         QtWidgets.QDialog.accept(self)
@@ -266,7 +272,7 @@ class SettingsWindow(QtWidgets.QDialog):
             QtWidgets.QMessageBox.information(
                 self, "UnRar Library Change",
                 "ComicTagger will need to be restarted for changes to take effect.")
-            
+
     def selectRar(self):
         self.selectFile(self.leRarExePath, "RAR")
 
@@ -317,10 +323,23 @@ class SettingsWindow(QtWidgets.QDialog):
             dialog.setWindowTitle("Find " + name + " program")
         else:
              dialog.setWindowTitle("Find " + name + " library")
-             
+
         if (dialog.exec_()):
             fileList = dialog.selectedFiles()
             control.setText(str(fileList[0]))
 
     def showRenameTab(self):
         self.tabWidget.setCurrentIndex(5)
+
+    def showTemplateHelp(self):
+        TemplateHelpWin = TemplateHelpWindow(self)
+        TemplateHelpWin.exec_()
+
+class TemplateHelpWindow(QtWidgets.QDialog):
+
+    def __init__(self, parent):
+        super(TemplateHelpWindow, self).__init__(parent)
+
+        uic.loadUi(ComicTaggerSettings.getUIFile('TemplateHelp.ui'), self)
+
+
