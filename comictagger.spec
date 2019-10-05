@@ -1,18 +1,19 @@
 # -*- mode: python -*-
 
 import platform
+from os.path import join
+from comictaggerlib import ctversion
 
+binaries = []
 block_cipher = None
 
-binaries = [
-    ('./unrar/libunrar.so', './'),
-]
-
 if platform.system() == "Windows":
+    from site import getsitepackages
+    sitepackages = getsitepackages()[1]
     # add ssl qt libraries not discovered automatically
     binaries.extend([
-        ('./venv/Lib/site-packages/PyQt5/Qt/bin/libeay32.dll', './PyQt5/Qt/bin'),
-        ('./venv/Lib/site-packages/PyQt5/Qt/bin/ssleay32.dll', './PyQt5/Qt/bin')
+        (join(sitepackages, "PyQt5/Qt/bin/libeay32.dll"), "./PyQt5/Qt/bin"),
+        (join(sitepackages, "PyQt5/Qt/bin/ssleay32.dll"), "./PyQt5/Qt/bin")
     ])
 
 a = Analysis(['comictagger.py'],
@@ -38,13 +39,17 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=False,
+          console=True,
           icon="windows/app.ico" )
 
 app = BUNDLE(exe,
             name='ComicTagger.app',
             icon='mac/app.icns',
             info_plist={
-                'NSHighResolutionCapable': 'True'
+                'NSHighResolutionCapable': 'True',
+                'NSRequiresAquaSystemAppearance': 'False',
+                'CFBundleDisplayName': 'ComicTagger',
+                'CFBundleShortVersionString': ctversion.version,
+                'CFBundleVersion': ctversion.version
             },
             bundle_identifier=None)
