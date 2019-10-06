@@ -213,7 +213,8 @@ class ComicVineTalker(QObject):
             'resources': 'volume',
             'query': search_series_name,
             'field_list': 'volume,name,id,start_year,publisher,image,description,count_of_issues',
-            'page': 1
+            'page': 1,
+            'limit': 100,
         }
 
         cv_response = self.getCVContent(self.api_base_url + "/search", params)
@@ -291,7 +292,8 @@ class ComicVineTalker(QObject):
             'resources': 'volume',
             'query': search_series_name,
             'field_list': 'volume,name,id,start_year,publisher,image,description,count_of_issues',
-            'page': 1
+            'page': 1,
+            'limit': 100,
         }
 
         cv_response = self.getCVContent(self.api_base_url + "/search", params)
