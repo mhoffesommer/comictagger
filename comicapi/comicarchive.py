@@ -29,7 +29,7 @@ import io
 #import shutil
 
 from natsort import natsorted
-from PyPDF2 import PdfFileReader
+# from PyPDF2 import PdfFileReader
 try:
     from unrar import rarfile
     from unrar import unrarlib
@@ -915,7 +915,7 @@ class ComicArchive:
                     #	k = os.path.join(os.path.split(k)[0], "z" + basename)
                     return k.lower()
 
-                files = natsorted(files, key=keyfunc, signed=False)
+                files = natsorted(files, key=keyfunc)
 
             # make a sub-list of image files
             self.page_list = []

@@ -8,7 +8,7 @@ LIBFLAGS=-fPIC
 DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DRAR_SMP
 STRIP=strip
 AR=ar
-LDFLAGS=-pthread
+LDFLAGS=-pthread -Wl,-soname=libunrar.so
 DESTDIR=/usr
 
 # Linux using LCC

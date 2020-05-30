@@ -1,0 +1,1195 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"dupe",
+				"dupe_set\tparam"
+			],
+			[
+				"score",
+				"score_list\tstatement"
+			],
+			[
+				"du",
+				"dupe_set\tparam"
+			],
+			[
+				"nex",
+				"nextHash_list\tstatement"
+			],
+			[
+				"ne",
+				"nextHash_list\tstatement"
+			],
+			[
+				"a",
+				"add"
+			],
+			[
+				"image",
+				"imageHash"
+			],
+			[
+				"ima",
+				"imageHash\tstatement"
+			],
+			[
+				"im",
+				"imageHash\tstatement"
+			],
+			[
+				"dup",
+				"dupe_set"
+			],
+			[
+				"sel",
+				"selection"
+			],
+			[
+				"rec",
+				"recordName"
+			],
+			[
+				"search",
+				"search_series_name"
+			],
+			[
+				"wre",
+				"writeLog"
+			],
+			[
+				"et",
+				"extras"
+			],
+			[
+				"extra",
+				"extras"
+			],
+			[
+				"dupli",
+				"duplicateImages"
+			],
+			[
+				"all",
+				"allSameCount\tstatement"
+			],
+			[
+				"file",
+				"fileCount"
+			],
+			[
+				"al",
+				"allDeleteable\tstatement"
+			],
+			[
+				"ext",
+				"extract\tfunction"
+			],
+			[
+				"for",
+				"format\tfunction"
+			],
+			[
+				"de",
+				"def\tFunction"
+			],
+			[
+				"new",
+				"new_dupe_set\tstatement"
+			],
+			[
+				"del",
+				"delete"
+			],
+			[
+				"whe",
+				"while\tWhile Loop"
+			],
+			[
+				"k",
+				"keeping"
+			],
+			[
+				"ar",
+				"archiveFile"
+			],
+			[
+				"ex",
+				"extension"
+			],
+			[
+				"arch",
+				"archivedFile"
+			],
+			[
+				"zip",
+				"zipfile"
+			],
+			[
+				"def",
+				"def\tFunction"
+			],
+			[
+				"me",
+				"metadata"
+			],
+			[
+				"f",
+				"f"
+			],
+			[
+				"try",
+				"try\tTry/Except"
+			],
+			[
+				"non",
+				"None"
+			],
+			[
+				"wor",
+				"word_list"
+			],
+			[
+				"url",
+				"urllib"
+			],
+			[
+				"plat",
+				"platform"
+			],
+			[
+				"req",
+				"requests"
+			],
+			[
+				"pars",
+				"parsedYear"
+			],
+			[
+				"api",
+				"api_key"
+			],
+			[
+				"cou",
+				"count_of_isssues"
+			],
+			[
+				"start",
+				"start_year"
+			],
+			[
+				"nam",
+				"name"
+			],
+			[
+				"fie",
+				"field_list"
+			],
+			[
+				"status",
+				"status_code"
+			],
+			[
+				"series",
+				"seriesYear"
+			],
+			[
+				"auto",
+				"auto_imprint"
+			],
+			[
+				"pu",
+				"publisher"
+			],
+			[
+				"form",
+				"formToMetadata"
+			],
+			[
+				"cl",
+				"clicked"
+			],
+			[
+				"pub",
+				"publisher"
+			],
+			[
+				"p",
+				"publisher"
+			],
+			[
+				"get",
+				"getPublisher"
+			],
+			[
+				"Mar",
+				"MarvelImprints"
+			],
+			[
+				"Imp",
+				"ImprintDict"
+			],
+			[
+				"DC",
+				"DC_Comics"
+			],
+			[
+				"Marv",
+				"Marvel"
+			],
+			[
+				"fmt",
+				"fmtObj"
+			],
+			[
+				"No",
+				"None"
+			],
+			[
+				"T",
+				"True"
+			],
+			[
+				"cbM",
+				"cbMaturityRating"
+			],
+			[
+				"F",
+				"False"
+			],
+			[
+				"i",
+				"if\tif … fi"
+			],
+			[
+				"part",
+				"part2"
+			],
+			[
+				"par",
+				"part2"
+			],
+			[
+				"md",
+				"md5sum"
+			],
+			[
+				"com",
+				"comicnumber"
+			],
+			[
+				"comi",
+				"comic1"
+			],
+			[
+				"e",
+				"ExitOnError\tflag.ErrorHandling ·Ɩ"
+			],
+			[
+				"go",
+				"gopherType\tstring ·ν"
+			],
+			[
+				"str",
+				"string\tstring ·ʈ"
+			],
+			[
+				"int",
+				"int64\tint64 ·ʈ"
+			],
+			[
+				"Int64",
+				"Int64Var\tfunc(p *int64, name string, value int64, usage string) ·ƒ"
+			],
+			[
+				"fl",
+				"float64\tfloat64 ·ʈ"
+			],
+			[
+				"P",
+				"Println\tfunc(a ...interface{}) int, error ·ƒ"
+			],
+			[
+				"print",
+				"Printf\tfunc(format string, a ...interface{}) int, error ·ƒ"
+			],
+			[
+				"pri",
+				"Println\tfunc(a ...interface{}) int, error ·ƒ"
+			],
+			[
+				"op",
+				"OpenFile\tfunc(name string, flag int, perm os.FileMode) *os.File, error ·ƒ"
+			],
+			[
+				"if",
+				"if err\terr != nil { return } ·ʂ"
+			],
+			[
+				"Pla",
+				"PlayItem\tstruct ·ʈ"
+			],
+			[
+				"uint",
+				"uint16\tuint16 ·ʈ"
+			],
+			[
+				"Ui",
+				"uint64\tuint64 ·ʈ"
+			],
+			[
+				"type",
+				"type struct\tstruct {} ·ʂ"
+			],
+			[
+				"PrimaryIG",
+				"PrimaryIGStreams\t[]PrimaryStream ·ν"
+			],
+			[
+				"ma",
+				"make\tfunc(Type, size IntegerType) Type ·ƒ"
+			],
+			[
+				"Str",
+				"StreamID\t[]byte ·ν"
+			],
+			[
+				"app",
+				"append\tappend(stnt.SecondaryAudioStreams, ...) ·ʂ"
+			],
+			[
+				"func",
+				"func method SecondaryStream\t(SecondaryStream) method() {...} ·ʂ"
+			],
+			[
+				"rea",
+				"reader\t*errReader ·ν"
+			],
+			[
+				"tye",
+				"type struct\tstruct {} ·ʂ"
+			],
+			[
+				"o",
+				"object\tiron.object.Object ·ν"
+			],
+			[
+				"on",
+				"onKeyDown"
+			],
+			[
+				"ke",
+				"KeyCode"
+			],
+			[
+				"key",
+				"KeyCode\t·ʈ"
+			],
+			[
+				"arm",
+				"armory\t package ·ρ"
+			],
+			[
+				"sys",
+				"System\t·ʈ"
+			],
+			[
+				"pro",
+				"projectPath\tstatement"
+			],
+			[
+				"ha",
+				"haxeExec\tstatement"
+			],
+			[
+				"no",
+				"normpath\tfunction"
+			],
+			[
+				"none",
+				"None\tkeyword"
+			],
+			[
+				"hxm",
+				"hxmlList\tstatement"
+			],
+			[
+				"kha",
+				"khamakePath\tstatement"
+			],
+			[
+				"node",
+				"nodePath"
+			],
+			[
+				"path",
+				"pathEnd\tstatement"
+			],
+			[
+				"Para",
+				"Paramaters\tstatement"
+			],
+			[
+				"Com",
+				"CompletionTrigger"
+			],
+			[
+				"xml",
+				"xmlItem\tparam"
+			],
+			[
+				"Par",
+				"ParseMethod\tfunction"
+			],
+			[
+				"C",
+				"Completion\tstatement"
+			],
+			[
+				"param",
+				"ParamReturnList\tstatement"
+			],
+			[
+				"Compl",
+				"CompletionHint\tstatement"
+			],
+			[
+				"Conp",
+				"Completion\tstatement"
+			],
+			[
+				"Ty",
+				"TypeClassThingyMajig\tstatement"
+			],
+			[
+				"ty",
+				"TypeClassThingyMajig"
+			],
+			[
+				"te",
+				"text"
+			],
+			[
+				"co",
+				"CompletionTrigger"
+			],
+			[
+				"HaxeE",
+				"haxeErr\tstatement"
+			],
+			[
+				"Completion",
+				"CompletionTrigger\tstatement"
+			],
+			[
+				"haxe",
+				"haxeType\tstatement"
+			],
+			[
+				"comp",
+				"completions"
+			],
+			[
+				"hax",
+				"haxeErr\tstatement"
+			],
+			[
+				"su",
+				"substr"
+			],
+			[
+				"compl",
+				"CompletionType\tstatement"
+			],
+			[
+				"cla",
+				"classString\tstatement"
+			],
+			[
+				"classi",
+				"classification"
+			],
+			[
+				"loc",
+				"locations\tparam"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 128.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"mer",
+				"Sublime Merge: Open Repository"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"tr",
+				"Trimmer: Trim trailing whitespace."
+			],
+			[
+				"ind",
+				"Indent XML"
+			],
+			[
+				"pyth",
+				"Set Syntax: Python"
+			],
+			[
+				"pla",
+				"Set Syntax: Plain Text Mono"
+			],
+			[
+				"trim",
+				"Trimmer: Trim trailing whitespace."
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"inde",
+				"Indent XML"
+			],
+			[
+				"sort",
+				"Sort Lines"
+			],
+			[
+				"low",
+				"Convert Case: Lower Case"
+			],
+			[
+				"pep",
+				"AutoPEP8: Preview Changes"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"indent",
+				"Auto indent"
+			],
+			[
+				"un",
+				"Permute Lines: Unique"
+			],
+			[
+				"sor",
+				"Sort Lines"
+			],
+			[
+				"in",
+				"Indent XML"
+			],
+			[
+				"rein",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"previe",
+				"Set Syntax: Man Page Preview"
+			],
+			[
+				"man page",
+				"Set Syntax: Man Page (groff/troff)"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"manp",
+				"Set Syntax: Man Page Preview"
+			],
+			[
+				"man",
+				"Manpage: Open manual page"
+			],
+			[
+				"xml",
+				"Indent XML"
+			],
+			[
+				"repo",
+				"Sublime Merge: Open Repository"
+			],
+			[
+				"auto",
+				"AutoPEP8: Format Code"
+			],
+			[
+				"istall",
+				"Package Control: Install Package"
+			],
+			[
+				"case",
+				"Convert Case: Title Case"
+			],
+			[
+				"bash",
+				"Set Syntax: Bourne Again Shell (bash)"
+			],
+			[
+				"uni",
+				"Permute Lines: Unique"
+			],
+			[
+				"up",
+				"Convert Case: Upper Case"
+			],
+			[
+				"tax go",
+				"Set Syntax: GoSublime: Go (Recommended)"
+			],
+			[
+				"tit",
+				"Convert Case: Title Case"
+			],
+			[
+				"package",
+				"View Package File"
+			],
+			[
+				"next",
+				"Anaconda: Next lint error"
+			],
+			[
+				"xm",
+				"Set Syntax: XML"
+			],
+			[
+				"sho",
+				"Anaconda: Show error list"
+			],
+			[
+				"view",
+				"View Package File"
+			],
+			[
+				"scope",
+				"Toggle ScopeAlways"
+			],
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"nex",
+				"Anaconda: Next lint error"
+			],
+			[
+				"syntax: py",
+				"Set Syntax: Python"
+			],
+			[
+				"theme",
+				"UI: Select Color Scheme"
+			]
+		],
+		"width": 479.0
+	},
+	"console":
+	{
+		"height": 340.0,
+		"history":
+		[
+			"clear",
+			"import sublime;sublime.platform()",
+			"htesp"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/timmy/build/source/comictagger-develop",
+		"/home/timmy/build/source/comictagger-develop/scripts"
+	],
+	"file_history":
+	[
+		"/home/timmy/Videos/October Baby.tv",
+		"/home/timmy/Videos/all.tv",
+		"/home/timmy/Videos/Mrs_Doubtfire.tv",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/issueselectionwindow.py",
+		"/home/timmy/build/source/comictagger-develop/scripts/find_dupes.py",
+		"/home/timmy/Videos/dupe_cmp/Absolute Carnage vs. Deadpool #002 (2019) (1).cbr/ComicInfo.xml",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/imagehasher.py",
+		"/home/timmy/Downloads/amdgpu-pro-preinstall.sh",
+		"/home/timmy/comics/fix.sh",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/main.py",
+		"/home/timmy/build/source/comictagger-develop/scripts/cmp.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/renamewindow.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/fileselectionlist.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/pagelisteditor.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/coverimagewidget.py",
+		"/home/timmy/comics/tmp/Final Crisis (DC Essential Edition) #001 - TPB (2019).cbr",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/issueidentifier.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/taggerwindow.py",
+		"/home/timmy/bin/videoCorrectAudio.sh",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/comicvinetalker.py",
+		"/home/timmy/build/source/comictagger-develop/requirements.txt",
+		"/home/timmy/.config/sublime-text-3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/home/timmy/.config/sublime-text-3/Packages/User/Anaconda.sublime-settings",
+		"/home/timmy/build/source/comictagger-develop/comicapi/utils.py",
+		"/home/timmy/.local/lib/python3.6/site-packages/unrar/unrarlib.py",
+		"/home/timmy/.local/lib/python3.6/site-packages/unrar/__init__.py",
+		"/home/timmy/.local/lib/python3.6/site-packages/unrar/constants.py",
+		"/home/timmy/.local/lib/python3.6/site-packages/unrar/rarfile.py",
+		"/home/timmy/comics/failed/Batman 086 (2020) (Digital) (Zone-Empire).cbr",
+		"/home/timmy/comics/complete/What If V2 086 ..The Scarlet Spider Had Killed Spider-Man.cbr",
+		"/home/timmy/comics/manual/01 Ara.cbr",
+		"/home/timmy/comics/manual/Blade of the Immortal v02 (1998) (Digital) (LuCaZ).cbz",
+		"/home/timmy/tmp.py",
+		"/home/timmy/bin/dup-comic.sh",
+		"/home/timmy/.local/lib/python3.6/site-packages/comictaggerlib/comicvinetalker.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/comicvinecacher.py",
+		"/home/timmy/.local/lib/python3.6/site-packages/comicapi/utils.py",
+		"/home/timmy/.local/lib/python3.6/site-packages/comictaggerlib/utils.py",
+		"/home/timmy/.config/sublime-text-3/Packages/Anaconda/Default (Linux).sublime-keymap",
+		"/usr/lib/python2.7/shutil.py",
+		"/home/timmy/bin/file.py",
+		"/home/timmy/build/source/comictagger-develop/comicapi/comicarchive.py",
+		"/tmp/mozilla_timmy0/ImageCompare.py",
+		"/home/timmy/comics/complete/Venom 029.cbr",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/filerenamer.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/settingswindow.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/ui/settingswindow.ui",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/cli.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/ui/TemplateHelp.ui",
+		"/home/timmy/Ansible/pippin.yaml",
+		"/home/timmy/Ansible/roles/void/tasks/main.yaml",
+		"/tmp/xa-HS698Z/hosts",
+		"/home/timmy/Downloads/GoLand-2019.2.2/bin/format.sh",
+		"/home/timmy/Downloads/GoLand-2019.2.2/Install-Linux-tar.txt",
+		"/home/timmy/Documents/shieldmaiden",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/ui/taggerwindow.ui",
+		"/home/timmy/.config/sublime-text-3/Packages/User/AutoPep8.sublime-settings",
+		"/usr/lib/python3.6/string.py",
+		"/home/timmy/build/source/comictagger-develop/comicapi/filenameparser.py",
+		"/home/timmy/build/source/comictagger-develop/comicapi/comicinfoxml.py",
+		"/home/timmy/build/source/comictagger-develop/comicapi/genericmetadata.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/imagefetcher.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/versionchecker.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/settings.py",
+		"/home/timmy/build/source/comictagger-develop/comicapi/comicbookinfo.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/options.py",
+		"/home/timmy/.config/sublime-text-3/Packages/User/Default.sublime-keymap",
+		"/home/timmy/.config/sublime-text-3/Packages/SublimeBookmarks/Default.sublime-keymap",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/autotagstartwindow.py",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/ui/autotagstartwindow.ui",
+		"/usr/lib/python3.6/_collections_abc.py",
+		"/usr/lib/python3.6/collections/abc.py",
+		"/home/timmy/build/source/comictagger-develop/.git/config",
+		"/home/timmy/build/source/comictagger-develop/comicapi/issuestring.py",
+		"/home/timmy/http.xml",
+		"/home/timmy/Downloads/minidlna-1.2.1/minidlna.conf.5",
+		"/home/timmy/.config/sublime-text-3/Packages/SublimeManpage/SublimeManpage.sublime-settings",
+		"/home/timmy/Downloads/minidlna-1.2.1/LICENCE.miniupnpd",
+		"/home/timmy/Downloads/minidlna-1.2.1/ChangeLog",
+		"/home/timmy/Downloads/minidlna-1.2.1/NEWS",
+		"/home/timmy/Downloads/minidlna-1.2.1/ABOUT-NLS",
+		"/tmp/xa-MTA35Z/ContentDirectory1.SyntaxTests.xml",
+		"/tmp/xa-MTA35Z/ContentDirectory1.xml",
+		"/tmp/xa-MTA35Z/MediaServer3.xml",
+		"/tmp/xa-MTA35Z/MediaServer2.xml",
+		"/home/timmy/go/src/timmy.narnian.us/git/timmy/wsfmt/.gitignore",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/volumeselectionwindow.py",
+		"/home/timmy/build/source/comictagger-develop/scripts/inventory.py",
+		"/home/timmy/build/source/comictagger-test/appveyor.yml",
+		"/home/timmy/build/source/comictagger-develop/comictaggerlib/ui/pagelisteditor.ui",
+		"/home/timmy/go/src/timmy.narnian.us/hid/keymaps/dvorak.json",
+		"/home/timmy/go/src/timmy.narnian.us/hid/keymaps/qwerty.json",
+		"/home/timmy/.config/massren/temp/12acfbeb-71fe-4f69-5469-ed012bb51e49.files.txt",
+		"/home/timmy/build/source/comictagger-test/scripts/find_dupes.py",
+		"/home/timmy/build/source/comictagger-test/comicapi/comicarchive.py",
+		"/home/timmy/build/source/comictagger-test/comictaggerlib/issueidentifier.py",
+		"/home/timmy/build/source/comictagger-test/comicapi/issuestring.py",
+		"/home/timmy/build/source/comictagger-test/comicapi/filenameparser.py",
+		"/home/timmy/build/source/comictagger-test/comictaggerlib/cli.py",
+		"/home/timmy/build/source/comictagger-test/comictaggerlib/filerenamer.py",
+		"/home/timmy/build/source/comictagger-test/comicapi/genericmetadata.py",
+		"/home/timmy/build/source/comictagger-test/comictaggerlib/options.py",
+		"/home/timmy/build/source/comictagger-test/comictaggerlib/comicvinetalker.py",
+		"/home/timmy/Ansible/roles/bombur/files/transmission.json",
+		"/home/timmy/Ansible/roles/bombur/tasks/main.yaml",
+		"/home/timmy/Ansible/roles/getmail/files/getmail",
+		"/home/timmy/.config/massren/temp/5e33246e-52ce-4b3f-53e4-958912a11275.files.txt",
+		"/home/timmy/Downloads/!FILES.STR",
+		"/tmp/mozilla_timmy0/Watch Dogs Complete Edition - CorePack.nfo",
+		"/home/timmy/Downloads/Stuxnet-Sourcecode/Stuxnet-Sourcecode/output/1E17D81979271CFA44D471430FE123A5/1E17D81979271CFA44D471430FE123A5.c",
+		"/home/timmy/comics/test/temp/out.html",
+		"/home/timmy/go/src/github.com/lordwelch/PresentationApp/image.go",
+		"/home/timmy/comics/test/out.html",
+		"/home/timmy/.config/massren/temp/45c104a8-f4d5-4793-4814-1c71801ea09a.files.txt",
+		"/home/timmy/.config/massren/temp/be36698d-56b5-48c4-4379-61b627bc4bb2.files.txt",
+		"/tmp/mozilla_timmy0/Old Man Quill 006 (2019) (Digital) (Zone-Empire)-3.log",
+		"/tmp/mozilla_timmy0/Old Man Quill 006 (2019) (Digital) (Zone-Empire).log",
+		"/tmp/mozilla_timmy0/EasySort.py",
+		"/tmp/mozilla_timmy0/Batman - Teenage Mutant Ninja Turtles III 02 (of 06) (2019) (Digital) (Zone-Empire).cbr.log",
+		"/tmp/mozilla_timmy0/Old Man Quill 006 (2019) (Digital) (Zone-Empire)-2.log",
+		"/tmp/mozilla_timmy0/Old Man Quill 006 (2019) (Digital) (Zone-Empire)-1.log",
+		"/home/timmy/comics/Stargate Universe 006 (2018) (Digital) (Kileko-Empire).cbz",
+		"/home/timmy/Comic/Stargate Universe 006 (2018) (Digital) (Kileko-Empire).cbr",
+		"/home/timmy/Calibre Library/Unknown/Stargate Universe 006 (2018) (Digital) (Kileko-Empire) (71)/Stargate Universe 006 (2018) (Digital) (Ki - Unknown.cbr",
+		"/home/timmy/Books/export/Fall of Gondolin, The - J. R. R. Tolkien.opf",
+		"/home/timmy/Books/export/Awakening a God - Troy Snyder.opf",
+		"/tmp/mozilla_timmy0/pfftn_3x.py",
+		"/tmp/mozilla_timmy0/pass-from-file-to-nzbget2.6.py"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 110.0,
+		"where_history":
+		[
+			"/home/timmy/build/source/comictagger-develop/",
+			"/home/timmy/build/source/comictagger-develop/comictaggerlib",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"bash",
+			"compareDupe",
+			"settings",
+			"Settings",
+			"settings",
+			"new_name_item",
+			"old_name_item",
+			"folder_item",
+			"twList",
+			"currentItemChanged",
+			"selectionChanged",
+			"twList",
+			"pageListEditor",
+			"IDHashes",
+			"output_function",
+			"defaultWriteOutput",
+			"l",
+			"#s",
+			"sys",
+			"unarar",
+			"unrarlib",
+			"setHasherAlgorithm",
+			"i",
+			"dupe_i",
+			"xrange",
+			"dupe_i",
+			"$PWD",
+			"-pattern_type none ",
+			"'",
+			"$n",
+			"file:",
+			"://",
+			"'file",
+			"$f",
+			"file",
+			"rename",
+			"()))\n",
+			"[1]",
+			"series_name",
+			"record",
+			"last_result",
+			"search_series_name",
+			">>>",
+			"^      \"name\": ",
+			"      \"name\": ",
+			"extras",
+			"Extras",
+			"\"))\n",
+			"silent",
+			"x",
+			"dupe",
+			"//",
+			"min_score_distance",
+			"strong_score_thresh",
+			"setHasherAlgorithm",
+			"zipfile",
+			"rar",
+			"rarfile",
+			"constants",
+			"unrarlib",
+			"%s",
+			"filename",
+			"arg",
+			"File",
+			"$(basename \"",
+			"sudo",
+			"    ",
+			"quot",
+			"&#009;",
+			"&quot;",
+			"'",
+			"\t",
+			"date",
+			"&apos;",
+			"&#009;",
+			"string",
+			"}&#009;(",
+			"&#009;",
+			"string",
+			"}&#009;(",
+			"&#009;",
+			"settingsw",
+			"isVersionOf",
+			"characters",
+			"country",
+			"criticalRating",
+			"self",
+			"try",
+			"this",
+			"thisself",
+			"this",
+			"accept",
+			"formatter",
+			"determineName",
+			"| ",
+			"|",
+			"1978",
+			"Digital",
+			"(F)",
+			"\t",
+			"Star",
+			"\n\tStar",
+			"\t",
+			"cbz",
+			"select",
+			" isinstance(self.imprint, str) and",
+			"ImageHasher",
+			"()",
+			"plat",
+			"urllib",
+			"altUrlListFetchComplete",
+			"query_word_list",
+			"requests",
+			"version",
+			"request\\.",
+			"params",
+			"parsedYear",
+			"url",
+			"getCVContent",
+			"count_of_isssues",
+			"urllib",
+			"\")\n",
+			")\n",
+			" or \"\"",
+			"str",
+			"\"\"",
+			"save",
+			"ResultMultipleMatchesWithBadImageScores"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"\\t",
+			"requests.",
+			"auto_imprint",
+			"utils.xlate",
+			"<",
+			">",
+			"<",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 42.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.9o:///home/timmy/GO/src/github.com/fogleman/gg":
+	{
+		"height": 108.0
+	},
+	"output.9o:///home/timmy/GO/src/github.com/limetext/qml-go/examples/itemmodel":
+	{
+		"height": 114.0
+	},
+	"output.9o:///home/timmy/GO/src/github.com/lordwelch/PresentationApp":
+	{
+		"height": 256.0
+	},
+	"output.9o:///home/timmy/GO/src/github.com/lordwelch/test":
+	{
+		"height": 114.0
+	},
+	"output.9o:///home/timmy/GO/src/github.com/therecipe/examples/advanced/qml_quick/treeview":
+	{
+		"height": 180.0
+	},
+	"output.9o:///home/timmy/GO/src/timmy.narnian.us/git/timmy/wsfmt":
+	{
+		"height": 115.0
+	},
+	"output.9o:///home/timmy/GO/src/timmy.narnian.us/git/timmy/wsfmt/lexCmp":
+	{
+		"height": 115.0
+	},
+	"output.9o:///home/timmy/GO/src/timmy.narnian.us/git/timmy/wsfmt/text/lex":
+	{
+		"height": 115.0
+	},
+	"output.9o://9o":
+	{
+		"height": 144.0
+	},
+	"output.GoGuru Output":
+	{
+		"height": 0.0
+	},
+	"output.GoRename Output":
+	{
+		"height": 232.0
+	},
+	"output.GoSublime-main-output":
+	{
+		"height": 114.0
+	},
+	"output.GoSublime/HUD":
+	{
+		"height": 0.0
+	},
+	"output.GsComplete.completion-hint-output":
+	{
+		"height": 114.0
+	},
+	"output.GsDoc-output-output":
+	{
+		"height": 354.0
+	},
+	"output.autopep8":
+	{
+		"height": 144.0
+	},
+	"output.find_results":
+	{
+		"height": 144.0
+	},
+	"pinned_build_system": "Packages/GoSublime/GoSublime.sublime-build",
+	"project": "comictagger.sublime-project",
+	"replace":
+	{
+		"height": 70.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Videos/bluray.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 337.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
