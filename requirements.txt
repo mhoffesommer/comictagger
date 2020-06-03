@@ -1,9 +1,8 @@
-configparser
-requests
 beautifulsoup4 >= 4.1
-unrar==0.3
-natsort==3.5.2
-PyPDF2==1.24
+configparser
+natsort
+pathvalidate
 pillow>=4.3.0
 pyinstaller
-pathvalidate
+requests
+unrar
