@@ -636,8 +636,8 @@ class ImprintDict(dict):
             return (item, self.publisher, True)
 
 Marvel = ImprintDict("Marvel", {
-    "marvel comics":"",
-    "marvel":"",
+    "marvel comics": "",
+    "marvel": "",
     "aircel comics": "Aircel Comics",
     "aircel": "Aircel Comics",
     "atlas comics": "Atlas Comics",
@@ -650,6 +650,7 @@ Marvel = ImprintDict("Marvel", {
     "disney kingdoms": "Disney Kingdoms",
     "epic comics": "Epic Comics",
     "epic": "Epic Comics",
+    "epic comics group": "Epic Comics",
     "eternity comics": "Eternity Comics",
     "humorama": "Humorama",
     "icon comics": "Icon Comics",
@@ -666,6 +667,7 @@ Marvel = ImprintDict("Marvel", {
     "marvel frontier": "Marvel Frontier",
     "marvel illustrated": "Marvel Illustrated",
     "marvel knights": "Marvel Knights",
+    "marvel digital comics unlimited": "Marvel Unlimited",
     "marvel magazine group": "Marvel Magazine Group",
     "marvel mangaverse": "Marvel Mangaverse",
     "marvel monsters group": "Marvel Monsters Group",
@@ -691,13 +693,12 @@ Marvel = ImprintDict("Marvel", {
     "vital publications, inc.": "Vital Publications, Inc."
 })
 
-
 DC_Comics = ImprintDict("DC Comics", {
-    "dc comics":"",
-    "dc_comics":"",
-    "dc":"",
-    "dccomics":"",
-    "!mpact Comics": "Impact Comics",
+    "dc comics": "",
+    "dc_comics": "",
+    "dc": "",
+    "tangent comics": "Tangent Comics",
+    "dccomics": "",
     "all star dc": "All-Star",
     "all star": "All-Star",
     "all-star dc": "All-Star",
@@ -714,21 +715,20 @@ DC_Comics = ImprintDict("DC Comics", {
     "earth one": "Earth One",
     "earth-m": "Earth M",
     "elseworlds": "Elseworlds",
-    "EO": "Earth One",
+    "eo": "Earth One",
     "first wave": "First Wave",
     "focus": "DC Focus",
     "helix": "Helix",
     "homage comics": "Homage Comics",
     "impact comics": "Impact Comics",
-    "Impact! Comics": "Impact Comics",
-    "johnny dc": "DC Entertainment",
+    "impact! comics": "Impact Comics",
+    "!mpact comics": "Impact Comics",
     "johnny dc": "Johnny DC",
     "mad": "Mad",
     "minx": "Minx",
     "paradox press": "Paradox Press",
     "piranha press": "Piranha Press",
     "sandman universe": "Sandman Universe",
-    "tangent comics": "Tangent Comics",
     "tsr": "TSR",
     "vertigo": "Vertigo",
     "wildstorm productions": "WildStorm Productions",
@@ -740,4 +740,29 @@ DC_Comics = ImprintDict("DC Comics", {
     "zuda": "Zuda Comics",
 })
 
-publishers = [Marvel, DC_Comics]
+Dark_Horse_Comics = ImprintDict("Dark Horse Comics", {
+    "legend": "Legend",
+    "comics' greatest world": "Dark Horse Heroes",
+    "dark horse heroes": "Dark Horse Heroes",
+    "dark horse manga": "Dark Horse Manga",
+    "maverick": "Maverick",
+    "dh press": "DH Press",
+    "m press": "M Press",
+    "dark horse digital": "Dark Horse Digital",
+    "dh deluxe": "DH Deluxe",
+    "kitchen sink books": "Kitchen Sink Books",
+    "berger books": "Berger Books",
+})
+
+Archie_Comics = ImprintDict("Archie Comics", {
+    "Archie Action": "Archie Action",
+    "Archie Horror": "Archie Horror",
+    "Dark Circle Comics": "Dark Circle Comics",
+    "Dark Circle": "Dark Circle Comics",
+    "Red Circle Comics": "Dark Circle Comics",
+    "Red Circle": "Dark Circle Comics",
+    "Archie Adventure Series": "Archie Adventure Series",
+    "Radio Comics": "Mighty Comics Group",
+    "Mighty Comics Group": "Mighty Comics Group",
+})
+publishers = [Marvel, DC_Comics, Dark_Horse_Comics, Archie_Comics]
