@@ -41,20 +41,26 @@ class SearchThread(QtCore.QThread):
     searchComplete = pyqtSignal()
     progressUpdate = pyqtSignal(int, int)
 
-    def __init__(self, series_name, refresh):
+    def __init__(self, series_name, refresh, literal=False):
         QtCore.QThread.__init__(self)
         self.series_name = series_name
         self.refresh = refresh
         self.error_code = None
+        self.literal = literal
 
     def run(self):
         comicVine = ComicVineTalker()
         try:
             self.cv_error = False
-            self.cv_search_results = comicVine.searchForSeries(
-                self.series_name,
-                callback=self.prog_callback,
-                refresh_cache=self.refresh)
+            if self.literal:
+                self.cv_search_results = comicVine.literalSearchForSeries(
+                    self.series_name,
+                    callback=self.prog_callback)
+            else:
+                self.cv_search_results = comicVine.searchForSeries(
+                    self.series_name,
+                    callback=self.prog_callback,
+                    refresh_cache=self.refresh)
         except ComicVineTalkerException as e:
             self.cv_search_results = []
             self.cv_error = True
@@ -93,7 +99,7 @@ class IdentifyThread(QtCore.QThread):
 class VolumeSelectionWindow(QtWidgets.QDialog):
 
     def __init__(self, parent, series_name, issue_number, year, issue_count,
-                 cover_index_list, comic_archive, settings, autoselect=False):
+                 cover_index_list, comic_archive, settings, autoselect=False, literal=False):
         super(VolumeSelectionWindow, self).__init__(parent)
 
         uic.loadUi(
@@ -123,6 +129,7 @@ class VolumeSelectionWindow(QtWidgets.QDialog):
         self.immediate_autoselect = autoselect
         self.cover_index_list = cover_index_list
         self.cv_search_results = None
+        self.literal = literal
 
         self.twList.resizeColumnsToContents()
         self.twList.currentItemChanged.connect(self.currentItemChanged)
@@ -294,7 +301,7 @@ class VolumeSelectionWindow(QtWidgets.QDialog):
         self.progdialog.setModal(True)
         self.progdialog.setMinimumDuration(300)
         QtCore.QCoreApplication.processEvents()        
-        self.search_thread = SearchThread(self.series_name, refresh)
+        self.search_thread = SearchThread(self.series_name, refresh, self.literal)
         self.search_thread.searchComplete.connect(self.searchComplete)
         self.search_thread.progressUpdate.connect(self.searchProgressUpdate)
         self.search_thread.start()

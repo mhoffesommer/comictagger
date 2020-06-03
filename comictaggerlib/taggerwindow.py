@@ -389,6 +389,8 @@ class TaggerWindow(QtWidgets.QMainWindow):
         self.actionSearchOnline.setStatusTip('Search online for tags')
         self.actionSearchOnline.triggered.connect(self.queryOnline)
 
+        self.actionLiteralSearch.triggered.connect(self.literalSearch)
+
         self.actionAutoIdentify.setShortcut('Ctrl+I')
         self.actionAutoIdentify.triggered.connect(self.autoIdentifySearch)
 
@@ -426,6 +428,8 @@ class TaggerWindow(QtWidgets.QMainWindow):
             QtGui.QIcon(ComicTaggerSettings.getGraphic('parse.png')))
         self.actionSearchOnline.setIcon(
             QtGui.QIcon(ComicTaggerSettings.getGraphic('search.png')))
+        self.actionLiteralSearch.setIcon(
+            QtGui.QIcon(ComicTaggerSettings.getGraphic('search.png')))
         self.actionAutoIdentify.setIcon(
             QtGui.QIcon(ComicTaggerSettings.getGraphic('auto.png')))
         self.actionAutoTag.setIcon(
@@ -441,6 +445,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
         self.toolBar.addAction(self.actionSearchOnline)
         self.toolBar.addAction(self.actionAutoIdentify)
         self.toolBar.addAction(self.actionAutoTag)
+        self.toolBar.addAction(self.actionLiteralSearch)
         self.toolBar.addAction(self.actionClearEntryForm)
         self.toolBar.addAction(self.actionPageBrowser)
 
@@ -1047,7 +1052,10 @@ class TaggerWindow(QtWidgets.QMainWindow):
 
         self.queryOnline(autoselect=True)
 
-    def queryOnline(self, autoselect=False):
+    def literalSearch(self):
+        self.queryOnline(autoselect=False,literal=True)
+
+    def queryOnline(self, autoselect=False, literal=False):
 
         issue_number = str(self.leIssueNum.text()).strip()
 
@@ -1085,7 +1093,9 @@ class TaggerWindow(QtWidgets.QMainWindow):
             cover_index_list,
             self.comic_archive,
             self.settings,
-            autoselect)
+            autoselect,
+            literal
+        )
 
         title = "Search: '" + series_name + "' - "
         selector.setWindowTitle(title + "Select Series")
