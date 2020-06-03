@@ -201,6 +201,70 @@ class ComicVineTalker(QObject):
         raise ComicVineTalkerException(
             ComicVineTalkerException.Unknown, "Error on Comic Vine server")
 
+    def literalSearchForSeries(self, series_name, callback=None):
+
+        # normalize unicode and convert to ascii. Does not work for everything eg ½ to 1⁄2 not 1/2
+        search_series_name = unicodedata.normalize('NFKD', series_name).encode('ascii', 'ignore').decode('ascii')
+
+        params = {
+            'api_key': self.api_key,
+            'format': 'json',
+            'resources': 'volume',
+            'query': search_series_name,
+            'field_list': 'volume,name,id,start_year,publisher,image,description,count_of_issues',
+            'page': 1
+        }
+
+        cv_response = self.getCVContent(self.api_base_url + "/search", params)
+
+        search_results = list()
+
+        # see http://api.comicvine.com/documentation/#handling_responses
+
+        limit = cv_response['limit']
+        current_result_count = cv_response['number_of_page_results']
+        total_result_count = cv_response['number_of_total_results']
+
+        # 8 Dec 2018 - Comic Vine changed query results again. Terms are now
+        # ORed together, and we get thousands of results.  Good news is the
+        # results are sorted by relevance, so we can be smart about halting
+        # the search.
+        # 1. Don't fetch more than some sane amount of pages.
+        max_results = 50
+
+        total_result_count = min(total_result_count, max_results)
+
+        if callback is None:
+            self.writeLog(
+                "Found {0} of {1} results\n".format(
+                    cv_response['number_of_page_results'],
+                    cv_response['number_of_total_results']))
+        search_results.extend(cv_response['results'])
+        page = 1
+
+        if callback is not None:
+            callback(current_result_count, total_result_count)
+
+        # see if we need to keep asking for more pages...
+        while current_result_count < total_result_count:
+            if callback is None:
+                self.writeLog(
+                    "getting another page of results {0} of {1}...\n".format(
+                        current_result_count,
+                        total_result_count))
+            page += 1
+
+            params['page'] = page
+            cv_response = self.getCVContent(self.api_base_url + "/search", params)
+
+            search_results.extend(cv_response['results'])
+            current_result_count += cv_response['number_of_page_results']
+
+            if callback is not None:
+                callback(current_result_count, total_result_count)
+
+        return search_results
+
     def searchForSeries(self, series_name, callback=None, refresh_cache=False):
 
         # Sanitize the series name for comicvine searching, comicvine search ignore symbols
