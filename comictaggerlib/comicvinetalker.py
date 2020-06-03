@@ -351,8 +351,8 @@ class ComicVineTalker(QObject):
 
             # Also, stop searching when the word count of last results is too much longer
             # than our search terms list
-            if len(last_result) > result_word_count_max:
-                #print("Last result '{}' is too long. Halting search result fetching".format(last_result))
+            if len(last_result.split()) > result_word_count_max:
+                print("Last result '{}' is too long: max word count: {}; Search terms {}. Halting search result fetching".format(last_result, result_word_count_max, search_series_name.split()), file=sys.stderr)
                 stop_searching = True
 
             if stop_searching:
