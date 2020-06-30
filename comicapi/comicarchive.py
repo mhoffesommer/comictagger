@@ -25,7 +25,6 @@ import time
 import io
 
 import natsort
-from PyPDF2 import PdfFileReader
 from unrar.cffi import rarfile
 try:
     import Image
@@ -172,7 +171,7 @@ class ZipArchiver:
 
             found = False
             value = bytearray()
-            
+
             # walk backwards to find the "End of Central Directory" record
             while (not found) and (-pos != file_length):
                 # seek, relative to EOF
@@ -271,7 +270,7 @@ class RarArchiver:
                 f.close()
 
                 working_dir = os.path.dirname(os.path.abspath(self.path))
-                
+
                 # use external program to write comment to Rar archive
                 proc_args = [self.rar_exe_path,
                                  'c',
@@ -305,7 +304,7 @@ class RarArchiver:
         while tries < 7:
             try:
                 tries = tries + 1
-                data = rarc.open(archive_file).read()                
+                data = rarc.open(archive_file).read()
                 entries = [(rarc.getinfo(archive_file), data)]
 
                 if entries[0][0].file_size != len(entries[0][1]):
@@ -530,35 +529,6 @@ class UnknownArchiver:
         return []
 
 
-class PdfArchiver:
-
-    def __init__(self, path):
-        self.path = path
-
-    def getArchiveComment(self):
-        return ""
-
-    def setArchiveComment(self, comment):
-        return False
-
-    def readArchiveFile(self, page_num):
-        return subprocess.check_output(
-            ['mudraw', '-o', '-', self.path, str(int(os.path.basename(page_num)[:-4]))])
-
-    def writeArchiveFile(self, archive_file, data):
-        return False
-
-    def removeArchiveFile(self, archive_file):
-        return False
-
-    def getArchiveFilenameList(self):
-        out = []
-        pdf = PdfFileReader(open(self.path, 'rb'))
-        for page in range(1, pdf.getNumPages() + 1):
-            out.append("/%04d.jpg" % (page))
-        return out
-
-
 class ComicArchive:
     logo_data = None
 
@@ -635,7 +605,7 @@ class ComicArchive:
         return zipfile.is_zipfile(self.path)
 
     def rarTest(self):
-        return rarfile.is_rarfile(self.path)        
+        return rarfile.is_rarfile(self.path)
 
     def isZip(self):
         return self.archive_type == self.ArchiveType.Zip
