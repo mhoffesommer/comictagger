@@ -29,15 +29,12 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-
 StyleMessage = 0
 StyleQuestion = 1
 
 
 class OptionalMessageDialog(QDialog):
-
-    def __init__(self, parent, style, title, msg,
-                 check_state=Qt.Unchecked, check_text=None):
+    def __init__(self, parent, style, title, msg, check_state=Qt.Unchecked, check_text=None):
         QDialog.__init__(self, parent)
 
         self.setWindowTitle(title)
@@ -49,8 +46,7 @@ class OptionalMessageDialog(QDialog):
         self.theLabel.setWordWrap(True)
         self.theLabel.setTextFormat(Qt.RichText)
         self.theLabel.setOpenExternalLinks(True)
-        self.theLabel.setTextInteractionFlags(
-            Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse | Qt.LinksAccessibleByKeyboard)
+        self.theLabel.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse | Qt.LinksAccessibleByKeyboard)
 
         l.addWidget(self.theLabel)
         l.insertSpacing(-1, 10)
@@ -71,11 +67,7 @@ class OptionalMessageDialog(QDialog):
         if style == StyleQuestion:
             btnbox_style = QDialogButtonBox.Yes | QDialogButtonBox.No
 
-        self.theButtonBox = QDialogButtonBox(
-            btnbox_style,
-            parent=self,
-            accepted=self.accept,
-            rejected=self.reject)
+        self.theButtonBox = QDialogButtonBox(btnbox_style, parent=self, accepted=self.accept, rejected=self.reject)
 
         l.addWidget(self.theButtonBox)
 
@@ -90,28 +82,15 @@ class OptionalMessageDialog(QDialog):
     @staticmethod
     def msg(parent, title, msg, check_state=Qt.Unchecked, check_text=None):
 
-        d = OptionalMessageDialog(
-            parent,
-            StyleMessage,
-            title,
-            msg,
-            check_state=check_state,
-            check_text=check_text)
+        d = OptionalMessageDialog(parent, StyleMessage, title, msg, check_state=check_state, check_text=check_text)
 
         d.exec_()
         return d.theCheckBox.isChecked()
 
     @staticmethod
-    def question(
-            parent, title, msg, check_state=Qt.Unchecked, check_text=None):
+    def question(parent, title, msg, check_state=Qt.Unchecked, check_text=None):
 
-        d = OptionalMessageDialog(
-            parent,
-            StyleQuestion,
-            title,
-            msg,
-            check_state=check_state,
-            check_text=check_text)
+        d = OptionalMessageDialog(parent, StyleQuestion, title, msg, check_state=check_state, check_text=check_text)
 
         d.exec_()
 

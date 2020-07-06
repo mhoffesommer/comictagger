@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import os
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
@@ -29,8 +29,7 @@ class CreditEditorWindow(QtWidgets.QDialog):
     def __init__(self, parent, mode, role, name, primary):
         super(CreditEditorWindow, self).__init__(parent)
 
-        uic.loadUi(
-            ComicTaggerSettings.getUIFile('crediteditorwindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("crediteditorwindow.ui"), self)
 
         self.mode = mode
 
@@ -90,7 +89,6 @@ class CreditEditorWindow(QtWidgets.QDialog):
 
     def accept(self):
         if self.cbRole.currentText() == "" or self.leName.text() == "":
-            QtWidgets.QMessageBox.warning(self, self.tr("Whoops"), self.tr(
-                "You need to enter both role and name for a credit."))
+            QtWidgets.QMessageBox.warning(self, self.tr("Whoops"), self.tr("You need to enter both role and name for a credit."))
         else:
             QtWidgets.QDialog.accept(self)

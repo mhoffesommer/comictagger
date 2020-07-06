@@ -16,8 +16,8 @@
 
 import os
 import re
-import sys
 import string
+import sys
 
 from pathvalidate import sanitize_filepath
 
@@ -27,22 +27,20 @@ from .issuestring import IssueString
 
 class MetadataFormatter(string.Formatter):
     def __init__(self, smart_cleanup=False):
-       super().__init__()
-       self.smart_cleanup = smart_cleanup
+        super().__init__()
+        self.smart_cleanup = smart_cleanup
 
     def format_field(self, value, format_spec):
         if value is None or value == "":
             return ""
         return super().format_field(value, format_spec)
 
-    def _vformat(self, format_string, args, kwargs, used_args, recursion_depth,
-                 auto_arg_index=0):
+    def _vformat(self, format_string, args, kwargs, used_args, recursion_depth, auto_arg_index=0):
         if recursion_depth < 0:
-            raise ValueError('Max string recursion exceeded')
+            raise ValueError("Max string recursion exceeded")
         result = []
         lstrip = False
-        for literal_text, field_name, format_spec, conversion in \
-                self.parse(format_string):
+        for literal_text, field_name, format_spec, conversion in self.parse(format_string):
 
             # output the literal text
             if literal_text:
@@ -57,18 +55,14 @@ class MetadataFormatter(string.Formatter):
                 #  the formatting
 
                 # handle arg indexing when empty field_names are given.
-                if field_name == '':
+                if field_name == "":
                     if auto_arg_index is False:
-                        raise ValueError('cannot switch from manual field '
-                                         'specification to automatic field '
-                                         'numbering')
+                        raise ValueError("cannot switch from manual field specification to automatic field numbering")
                     field_name = str(auto_arg_index)
                     auto_arg_index += 1
                 elif field_name.isdigit():
                     if auto_arg_index:
-                        raise ValueError('cannot switch from manual field '
-                                         'specification to automatic field '
-                                         'numbering')
+                        raise ValueError("cannot switch from manual field specification to automatic field numbering")
                     # disable auto arg incrementing, if it gets
                     # used later on, then an exception will be raised
                     auto_arg_index = False
@@ -82,10 +76,7 @@ class MetadataFormatter(string.Formatter):
                 obj = self.convert_field(obj, conversion)
 
                 # expand the format spec, if needed
-                format_spec, auto_arg_index = self._vformat(
-                    format_spec, args, kwargs,
-                    used_args, recursion_depth-1,
-                    auto_arg_index=auto_arg_index)
+                format_spec, auto_arg_index = self._vformat(format_spec, args, kwargs, used_args, recursion_depth - 1, auto_arg_index=auto_arg_index)
 
                 # format the object and append to the result
                 fmtObj = self.format_field(obj, format_spec)
@@ -94,15 +85,13 @@ class MetadataFormatter(string.Formatter):
                     result.pop()
                 result.append(fmtObj)
 
-        return ''.join(result), auto_arg_index
+        return "".join(result), auto_arg_index
 
 
 class FileRenamer:
-
     def __init__(self, metadata):
         self.setMetadata(metadata)
-        self.setTemplate(
-            "{publisher}/{series}/{series} v{volume} #{issue} (of {issueCount}) ({year})")
+        self.setTemplate("{publisher}/{series}/{series} v{volume} #{issue} (of {issueCount}) ({year})")
         self.smart_cleanup = True
         self.issue_zero_padding = 3
         self.move = False
@@ -121,10 +110,10 @@ class FileRenamer:
 
     def determineName(self, filename, ext=None):
         class Default(dict):
-             def __missing__(self, key):
-                 return "{" + key + "}"
-        md = self.metdata
+            def __missing__(self, key):
+                return "{" + key + "}"
 
+        md = self.metdata
 
         # padding for issue
         md.issue = IssueString(md.issue).asString(pad=self.issue_zero_padding)

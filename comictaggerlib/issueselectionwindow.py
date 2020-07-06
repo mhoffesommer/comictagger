@@ -14,30 +14,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import sys
-#import os
-#import re
+# import sys
+# import os
+# import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-#from PyQt5.QtCore import QUrl, pyqtSignal, QByteArray
-#from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
+from comictaggerlib.ui.qtutils import reduceWidgetFontSize
 
 from .comicvinetalker import ComicVineTalker, ComicVineTalkerException
-from .settings import ComicTaggerSettings
-from .issuestring import IssueString
 from .coverimagewidget import CoverImageWidget
-from comictaggerlib.ui.qtutils import reduceWidgetFontSize
-#from imagefetcher import ImageFetcher
-#import utils
+from .issuestring import IssueString
+from .settings import ComicTaggerSettings
+
+# from PyQt5.QtCore import QUrl, pyqtSignal, QByteArray
+# from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
+
+# from imagefetcher import ImageFetcher
+# import utils
 
 
 class IssueNumberTableWidgetItem(QtWidgets.QTableWidgetItem):
-
     def __lt__(self, other):
         selfStr = self.data(QtCore.Qt.DisplayRole)
         otherStr = other.data(QtCore.Qt.DisplayRole)
-        return (IssueString(selfStr).asFloat() <
-                IssueString(otherStr).asFloat())
+        return IssueString(selfStr).asFloat() < IssueString(otherStr).asFloat()
 
 
 class IssueSelectionWindow(QtWidgets.QDialog):
@@ -47,11 +49,9 @@ class IssueSelectionWindow(QtWidgets.QDialog):
     def __init__(self, parent, settings, series_id, issue_number):
         super(IssueSelectionWindow, self).__init__(parent)
 
-        uic.loadUi(
-            ComicTaggerSettings.getUIFile('issueselectionwindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("issueselectionwindow.ui"), self)
 
-        self.coverWidget = CoverImageWidget(
-            self.coverImageContainer, CoverImageWidget.AltCoverMode)
+        self.coverWidget = CoverImageWidget(self.coverImageContainer, CoverImageWidget.AltCoverMode)
         gridlayout = QtWidgets.QGridLayout(self.coverImageContainer)
         gridlayout.addWidget(self.coverWidget)
         gridlayout.setContentsMargins(0, 0, 0, 0)
@@ -59,9 +59,7 @@ class IssueSelectionWindow(QtWidgets.QDialog):
         reduceWidgetFontSize(self.twList)
         reduceWidgetFontSize(self.teDescription, 1)
 
-        self.setWindowFlags(self.windowFlags() |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowMaximizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowMaximizeButtonHint)
 
         self.series_id = series_id
         self.settings = settings
@@ -86,14 +84,13 @@ class IssueSelectionWindow(QtWidgets.QDialog):
         else:
             for r in range(0, self.twList.rowCount()):
                 issue_id = self.twList.item(r, 0).data(QtCore.Qt.UserRole)
-                if (issue_id == self.initial_id):
+                if issue_id == self.initial_id:
                     self.twList.selectRow(r)
                     break
 
     def performQuery(self):
 
-        QtWidgets.QApplication.setOverrideCursor(
-            QtGui.QCursor(QtCore.Qt.WaitCursor))
+        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
 
         try:
             comicVine = ComicVineTalker()
@@ -102,15 +99,9 @@ class IssueSelectionWindow(QtWidgets.QDialog):
         except ComicVineTalkerException as e:
             QtWidgets.QApplication.restoreOverrideCursor()
             if e.code == ComicVineTalkerException.RateLimit:
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    self.tr("Comic Vine Error"),
-                    ComicVineTalker.getRateLimitMessage())
+                QtWidgets.QMessageBox.critical(self, self.tr("Comic Vine Error"), ComicVineTalker.getRateLimitMessage())
             else:
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    self.tr("Network Issue"),
-                    self.tr("Could not connect to Comic Vine to list issues!"))
+                QtWidgets.QMessageBox.critical(self, self.tr("Network Issue"), self.tr("Could not connect to Comic Vine to list issues!"))
             return
 
         while self.twList.rowCount() > 0:
@@ -122,15 +113,15 @@ class IssueSelectionWindow(QtWidgets.QDialog):
         for record in self.issue_list:
             self.twList.insertRow(row)
 
-            item_text = record['issue_number']
+            item_text = record["issue_number"]
             item = IssueNumberTableWidgetItem(item_text)
             item.setData(QtCore.Qt.ToolTipRole, item_text)
-            item.setData(QtCore.Qt.UserRole, record['id'])
+            item.setData(QtCore.Qt.UserRole, record["id"])
             item.setData(QtCore.Qt.DisplayRole, item_text)
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.twList.setItem(row, 0, item)
 
-            item_text = record['cover_date']
+            item_text = record["cover_date"]
             if item_text is None:
                 item_text = ""
             # remove the day of "YYYY-MM-DD"
@@ -143,7 +134,7 @@ class IssueSelectionWindow(QtWidgets.QDialog):
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.twList.setItem(row, 1, item)
 
-            item_text = record['name']
+            item_text = record["name"]
             if item_text is None:
                 item_text = ""
             item = QtWidgets.QTableWidgetItem(item_text)
@@ -151,10 +142,8 @@ class IssueSelectionWindow(QtWidgets.QDialog):
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.twList.setItem(row, 2, item)
 
-            if IssueString(
-                    record['issue_number']).asString().lower() == IssueString(
-                    self.issue_number).asString().lower():
-                self.initial_id = record['id']
+            if IssueString(record["issue_number"]).asString().lower() == IssueString(self.issue_number).asString().lower():
+                self.initial_id = record["id"]
 
             row += 1
 
@@ -177,12 +166,12 @@ class IssueSelectionWindow(QtWidgets.QDialog):
 
         # list selection was changed, update the the issue cover
         for record in self.issue_list:
-            if record['id'] == self.issue_id:
-                self.issue_number = record['issue_number']
+            if record["id"] == self.issue_id:
+                self.issue_number = record["issue_number"]
                 self.coverWidget.setIssueID(int(self.issue_id))
-                if record['description'] is None:
+                if record["description"] is None:
                     self.teDescription.setText("")
                 else:
-                    self.teDescription.setText(record['description'])
+                    self.teDescription.setText(record["description"])
 
                 break

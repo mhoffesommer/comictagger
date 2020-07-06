@@ -14,25 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import sys
-#import os
+# import sys
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from comictaggerlib.ui.qtutils import reduceWidgetFontSize
+
 from .settings import ComicTaggerSettings
-#import utils
+
+# import utils
 
 
 class IDProgressWindow(QtWidgets.QDialog):
-
     def __init__(self, parent):
         super(IDProgressWindow, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('progresswindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("progresswindow.ui"), self)
 
-        self.setWindowFlags(self.windowFlags() |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowMaximizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowMaximizeButtonHint)
 
         reduceWidgetFontSize(self.textEdit)

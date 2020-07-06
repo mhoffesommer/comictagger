@@ -18,22 +18,24 @@ TODO: This should be re-factored using subclasses!
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import os
+# import os
 
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from PyQt5 import uic
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
-from .settings import ComicTaggerSettings
+from comictaggerlib.ui.qtutils import getQImageFromData, reduceWidgetFontSize
+
 from .comicvinetalker import ComicVineTalker, ComicVineTalkerException
 from .imagefetcher import ImageFetcher
-from .pageloader import PageLoader
 from .imagepopup import ImagePopup
-from comictaggerlib.ui.qtutils import reduceWidgetFontSize, getQImageFromData
-#from genericmetadata import GenericMetadata, PageType
-#from comicarchive import MetaDataStyle
-#import utils
+from .pageloader import PageLoader
+from .settings import ComicTaggerSettings
+
+# from genericmetadata import GenericMetadata, PageType
+# from comicarchive import MetaDataStyle
+# import utils
 
 
 def clickable(widget):
@@ -67,7 +69,7 @@ class CoverImageWidget(QWidget):
     def __init__(self, parent, mode, expand_on_click=True):
         super(CoverImageWidget, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('coverimagewidget.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("coverimagewidget.ui"), self)
 
         reduceWidgetFontSize(self.label)
 
@@ -76,9 +78,8 @@ class CoverImageWidget(QWidget):
         self.page_loader = None
         self.showControls = True
 
-        self.btnLeft.setIcon(QIcon(ComicTaggerSettings.getGraphic('left.png')))
-        self.btnRight.setIcon(
-            QIcon(ComicTaggerSettings.getGraphic('right.png')))
+        self.btnLeft.setIcon(QIcon(ComicTaggerSettings.getGraphic("left.png")))
+        self.btnRight.setIcon(QIcon(ComicTaggerSettings.getGraphic("right.png")))
 
         self.btnLeft.clicked.connect(self.decrementImage)
         self.btnRight.clicked.connect(self.incrementImage)
@@ -145,8 +146,7 @@ class CoverImageWidget(QWidget):
             self.issue_id = issue_id
 
             self.comicVine = ComicVineTalker()
-            self.comicVine.urlFetchComplete.connect(
-                self.primaryUrlFetchComplete)
+            self.comicVine.urlFetchComplete.connect(self.primaryUrlFetchComplete)
             self.comicVine.asyncFetchIssueCoverURLs(int(self.issue_id))
 
     def setImageData(self, image_data):
@@ -178,10 +178,8 @@ class CoverImageWidget(QWidget):
         # page URL should already be cached, so no need to defer
         self.comicVine = ComicVineTalker()
         issue_page_url = self.comicVine.fetchIssuePageURL(self.issue_id)
-        self.comicVine.altUrlListFetchComplete.connect(
-            self.altCoverUrlListFetchComplete)
-        self.comicVine.asyncFetchAlternateCoverURLs(
-            int(self.issue_id), issue_page_url)
+        self.comicVine.altUrlListFetchComplete.connect(self.altCoverUrlListFetchComplete)
+        self.comicVine.asyncFetchAlternateCoverURLs(int(self.issue_id), issue_page_url)
 
     def altCoverUrlListFetchComplete(self, url_list, issue_id):
         if len(url_list) > 0:
@@ -229,29 +227,23 @@ class CoverImageWidget(QWidget):
         if self.imageIndex == -1 or self.imageCount == 1:
             self.label.setText("")
         elif self.mode == CoverImageWidget.AltCoverMode:
-            self.label.setText(
-                "Cover {0} (of {1})".format(
-                    self.imageIndex + 1,
-                    self.imageCount))
+            self.label.setText("Cover {0} (of {1})".format(self.imageIndex + 1, self.imageCount))
         else:
-            self.label.setText(
-                "Page {0} (of {1})".format(
-                    self.imageIndex + 1,
-                    self.imageCount))
+            self.label.setText("Page {0} (of {1})".format(self.imageIndex + 1, self.imageCount))
 
     def loadURL(self):
         self.loadDefault()
         self.cover_fetcher = ImageFetcher()
         self.cover_fetcher.fetchComplete.connect(self.coverRemoteFetchComplete)
         self.cover_fetcher.fetch(self.url_list[self.imageIndex])
-        #print("ATB cover fetch started...")
+        # print("ATB cover fetch started...")
 
     # called when the image is done loading from internet
     def coverRemoteFetchComplete(self, image_data, issue_id):
         img = getQImageFromData(image_data)
         self.current_pixmap = QPixmap(img)
         self.setDisplayPixmap(0, 0)
-        #print("ATB cover fetch complete!")
+        # print("ATB cover fetch complete!")
 
     def loadPage(self):
         if self.comic_archive is not None:
@@ -267,17 +259,14 @@ class CoverImageWidget(QWidget):
         self.page_loader = None
 
     def loadDefault(self):
-        self.current_pixmap = QPixmap(
-            ComicTaggerSettings.getGraphic('nocover.png'))
-        #print("loadDefault called")
+        self.current_pixmap = QPixmap(ComicTaggerSettings.getGraphic("nocover.png"))
+        # print("loadDefault called")
         self.setDisplayPixmap(0, 0)
 
     def resizeEvent(self, resize_event):
         if self.current_pixmap is not None:
-            delta_w = resize_event.size().width() - \
-                resize_event.oldSize().width()
-            delta_h = resize_event.size().height() - \
-                resize_event.oldSize().height()
+            delta_w = resize_event.size().width() - resize_event.oldSize().width()
+            delta_h = resize_event.size().height() - resize_event.oldSize().height()
             # print "ATB resizeEvent deltas", resize_event.size().width(),
             # resize_event.size().height()
             self.setDisplayPixmap(delta_w, delta_h)
@@ -285,14 +274,14 @@ class CoverImageWidget(QWidget):
     def setDisplayPixmap(self, delta_w, delta_h):
         """The deltas let us know what the new width and height of the label will be"""
 
-        #new_h = self.frame.height() + delta_h
-        #new_w = self.frame.width() + delta_w
+        # new_h = self.frame.height() + delta_h
+        # new_w = self.frame.width() + delta_w
         # print "ATB setDisplayPixmap deltas", delta_w , delta_h
         # print "ATB self.frame", self.frame.width(), self.frame.height()
         # print "ATB self.", self.width(), self.height()
 
-        #frame_w = new_w
-        #frame_h = new_h
+        # frame_w = new_w
+        # frame_h = new_h
 
         new_h = self.frame.height()
         new_w = self.frame.width()
@@ -312,8 +301,7 @@ class CoverImageWidget(QWidget):
         # print "ATB new size", new_w, new_h
 
         # scale the pixmap to fit in the frame
-        scaled_pixmap = self.current_pixmap.scaled(
-            new_w, new_h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        scaled_pixmap = self.current_pixmap.scaled(new_w, new_h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.lblImage.setPixmap(scaled_pixmap)
 
         # move and resize the label to be centered in the fame

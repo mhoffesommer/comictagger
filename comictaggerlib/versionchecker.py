@@ -14,56 +14,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import platform
-import requests
+import sys
 import urllib.parse
-#import os
+
+import requests
+
+from . import ctversion
+
+# import os
 
 try:
     from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
     from PyQt5.QtCore import QUrl, pyqtSignal, QObject, QByteArray
 except ImportError:
     # No Qt, so define a few dummy QObjects to help us compile
-    class QObject():
-
+    class QObject:
         def __init__(self, *args):
             pass
 
-    class pyqtSignal():
-
+    class pyqtSignal:
         def __init__(self, *args):
             pass
 
         def emit(a, b, c):
             pass
 
-from . import ctversion
-
 
 class VersionChecker(QObject):
-
     def getRequestUrl(self, uuid, use_stats):
 
         base_url = "http://comictagger1.appspot.com/latest"
         args = ""
         params = dict()
         if use_stats:
-            params = {
-                'uuid': uuid,
-                'version': ctversion.version
-            }
+            params = {"uuid": uuid, "version": ctversion.version}
             if platform.system() == "Windows":
-                params['platform'] = "win"
+                params["platform"] = "win"
             elif platform.system() == "Linux":
-                params['platform'] = "lin"
+                params["platform"] = "lin"
             elif platform.system() == "Darwin":
-                params['platform'] = "mac"
+                params["platform"] = "mac"
             else:
-                params['platform'] = "other"
+                params["platform"] = "other"
 
-            if not getattr(sys, 'frozen', None):
-                params['src'] = 'T'
+            if not getattr(sys, "frozen", None):
+                params["src"] = "T"
 
         return (base_url, params)
 
@@ -85,10 +81,10 @@ class VersionChecker(QObject):
 
         self.nam = QNetworkAccessManager()
         self.nam.finished.connect(self.asyncGetLatestVersionComplete)
-        self.nam.get(QNetworkRequest(QUrl(str(url + '?' + urllib.parse.urlencode(params)))))
+        self.nam.get(QNetworkRequest(QUrl(str(url + "?" + urllib.parse.urlencode(params)))))
 
     def asyncGetLatestVersionComplete(self, reply):
-        if (reply.error() != QNetworkReply.NoError):
+        if reply.error() != QNetworkReply.NoError:
             return
 
         # read in the response

@@ -7,64 +7,19 @@ import hashlib
 import platform
 import shutil
 import signal
-from operator import attrgetter
-from operator import itemgetter
+import typing
+from operator import attrgetter, itemgetter
 from typing import Dict, List
 
-import filetype
-import typing
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from comictaggerlib.ui.qtutils import centerWindowOnParent
-
-try:
-    from unrar import unrarlib, rarfile
-
-    # monkey patch unrarlib to avoid segfaults on Win10
-    if platform.system() == 'Windows':
-        unrarlib.UNRARCALLBACK = ctypes.WINFUNCTYPE(
-            # return type
-            ctypes.c_int,
-            # msg
-            ctypes.c_uint,
-            # UserData
-            ctypes.c_long,
-            # MONKEY PATCH HERE -- use a pointer instead of a long, in unrar code: (LPARAM)(*byte),
-            # that is a pointer to byte casted to LPARAM
-            # On win10 64bit causes nasty segfaults when used from pyinstaller
-            ctypes.POINTER(ctypes.c_byte),
-            # size
-            ctypes.c_long
-        )
-        RARSetCallback = unrarlib._c_func(unrarlib.RARSetCallback, None,
-                                          [unrarlib.HANDLE, unrarlib.UNRARCALLBACK, ctypes.c_long])
-
-
-        def _rar_cb(self, msg, user_data, p1, p2):
-            if msg == constants.UCM_NEEDPASSWORD or msg == constants.UCM_NEEDPASSWORDW:
-                # This is a work around since libunrar doesn't
-                # properly return the error code when files are encrypted
-                self._missing_password = True
-            elif msg == constants.UCM_PROCESSDATA:
-                if self._data is None:
-                    self._data = b''
-                chunk = ctypes.string_at(p1, p2)
-                self._data += chunk
-            return 1
-
-
-        rarfile._ReadIntoMemory._callback = _rar_cb
-    rarSupport = True
-except Exception as e:
-    rarSupport = False
-    print(e)
-    print("WARNING: cannot find libunrar, rar support is disabled")
-    pass
-
+import filetype
 from comictaggerlib.comicarchive import *
-from comictaggerlib.settings import *
-from comictaggerlib.imagehasher import ImageHasher
 from comictaggerlib.filerenamer import FileRenamer
+from comictaggerlib.imagehasher import ImageHasher
+from comictaggerlib.settings import *
+from comictaggerlib.ui.qtutils import centerWindowOnParent
+from unrar.cffi import rarfile
 
 root = 1 << 31 - 1
 something = 1 << 31 - 1
@@ -82,6 +37,7 @@ class ImageMeta:
 
 class Duplicate:
     """docstring for Duplicate"""
+
     imageHashes: Dict[str, ImageMeta]
 
     def __init__(self, path, metadata: GenericMetadata, cover):
@@ -106,9 +62,9 @@ class Duplicate:
     def extract(self, directory):
         archive_type = filetype.archive(self.path)
         if archive_type is not None:
-            if archive_type.extension == 'zip':
+            if archive_type.extension == "zip":
                 archive = zipfile.ZipFile(self.path)
-            elif archive_type.extension == 'rar' and rarSupport:
+            elif archive_type.extension == "rar" and rarSupport:
                 archive = rarfile.RarFile(self.path)
                 archive.close = lambda: None
             else:
@@ -134,13 +90,14 @@ class Duplicate:
                             self.duplicateImages.add(filename)
                         else:
                             image_hash = ImageHasher(data=file_bytes, width=12, height=12).average_hash()
-                            self.imageHashes[file_hash] = ImageMeta(os.path.join(self.extractedPath, filename), file_hash, image_hash,
-                                                                    image_type.extension)
+                            self.imageHashes[file_hash] = ImageMeta(
+                                os.path.join(self.extractedPath, filename), file_hash, image_hash, image_type.extension
+                            )
                     else:
                         self.extras.add(filename)
 
                     os.makedirs(self.extractedPath, 0o777, True)
-                    unarchived_file = open(os.path.join(self.extractedPath, filename), mode='wb')
+                    unarchived_file = open(os.path.join(self.extractedPath, filename), mode="wb")
                     archived_file.seek(0, io.SEEK_SET)
                     shutil.copyfileobj(archived_file, unarchived_file)
                     archived_file.close()
@@ -184,16 +141,16 @@ class Tree(QtCore.QAbstractListModel):
         f = FileRenamer(self.rootItem[index.row()][0].metadata)
         f.setTemplate("{series} #{issue} - {title} ({year})")
         if role == QtCore.Qt.DisplayRole:
-            return f.determineName('')
+            return f.determineName("")
         elif role == QtCore.Qt.UserRole:
-            return f.determineName('')
+            return f.determineName("")
         return QtCore.QVariant()
 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, file_list, settings, style, work_path, parent=None):
         super().__init__(parent)
-        uic.loadUi('/home/timmy/build/source/comictagger-develop/scripts/mainwindow.ui', self)
+        uic.loadUi("/home/timmy/build/source/comictagger-develop/scripts/mainwindow.ui", self)
         self.dupes = []
         self.firstRun = 0
         self.dupe_set_list: List[List[Duplicate]] = list()
@@ -290,11 +247,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 break
             dialog.setValue(dialog.value() + 1)
             dialog.setLabelText(filename)
-            ca = ComicArchive(filename, self.settings.rar_exe_path,
-                              default_image_path='/home/timmy/build/source/comictagger-test/comictaggerlib/graphics/nocover.png')
+            ca = ComicArchive(
+                filename,
+                self.settings.rar_exe_path,
+                default_image_path="/home/timmy/build/source/comictagger-test/comictaggerlib/graphics/nocover.png",
+            )
             if ca.seemsToBeAComicArchive() and ca.hasMetadata(self.style):
                 fmt_str = "{{0:{0}}}".format(max_name_len)
-                print(fmt_str.format(filename) + "\r", end='', file=sys.stderr)
+                print(fmt_str.format(filename) + "\r", end="", file=sys.stderr)
                 sys.stderr.flush()
                 md = ca.readMetadata(self.style)
                 cover = ca.getPage(0)
@@ -385,7 +345,7 @@ class DupeWindow(QtWidgets.QWidget):
 
     def __init__(self, duplicates: List[Duplicate], tmp, parent=None):
         super().__init__(parent, QtCore.Qt.Window)
-        uic.loadUi('/home/timmy/build/source/comictagger-develop/scripts/dupe.ui', self)
+        uic.loadUi("/home/timmy/build/source/comictagger-develop/scripts/dupe.ui", self)
 
         for f in self.comic1Image.children():
             f.deleteLater()
@@ -554,23 +514,29 @@ color: {file_color};
 color: {image_color};
 }}
 """
-        text = "name: {{duplicate.path}}<br/>" \
-               "page count: <span class='page'>{len}</span><br/>" \
-               "size/type: <span class='size'>{{width}}x{{height}}</span>/<span class='type'>{meta.type}</span><br/>" \
-               "file_hash: <span class='file'>{meta.file_hash}</span><br/>" \
-               "image_hash: <span class='image'>{meta.image_hash}</span>" \
-            .format(meta=image_hash, style=style, len=len(self.duplicates[self.dupe1].imageHashes))
+        text = (
+            "name: {{duplicate.path}}<br/>"
+            "page count: <span class='page'>{len}</span><br/>"
+            "size/type: <span class='size'>{{width}}x{{height}}</span>/<span class='type'>{meta.type}</span><br/>"
+            "file_hash: <span class='file'>{meta.file_hash}</span><br/>"
+            "image_hash: <span class='image'>{meta.image_hash}</span>".format(
+                meta=image_hash, style=style, len=len(self.duplicates[self.dupe1].imageHashes)
+            )
+        )
         self.comic1Image.setDuplicate(self.duplicates[self.dupe1])
         self.comic1Image.setImage(image_hash.name)
         self.comic1Image.setText(text)
         self.comic1Image.setLabelStyle(style)
 
-        text = "name: {{duplicate.path}}<br/>" \
-               "page count: <span class='page'>{len}</span><br/>" \
-               "size/type: <span class='size'>{{width}}x{{height}}</span>/<span class='type'>{score.type}</span><br/>" \
-               "file_hash: <span class='file'>{score.file_hash}</span><br/>" \
-               "image_hash: <span class='image'>{score.image_hash}</span>" \
-            .format(score=score_hash, style=style, len=len(self.duplicates[self.dupe2].imageHashes))
+        text = (
+            "name: {{duplicate.path}}<br/>"
+            "page count: <span class='page'>{len}</span><br/>"
+            "size/type: <span class='size'>{{width}}x{{height}}</span>/<span class='type'>{score.type}</span><br/>"
+            "file_hash: <span class='file'>{score.file_hash}</span><br/>"
+            "image_hash: <span class='image'>{score.image_hash}</span>".format(
+                score=score_hash, style=style, len=len(self.duplicates[self.dupe2].imageHashes)
+            )
+        )
         self.comic2Image.setDuplicate(self.duplicates[self.dupe2])
         self.comic2Image.setImage(score_hash.name)
         self.comic2Image.setText(text)
@@ -598,7 +564,14 @@ class QQlabel(QtWidgets.QLabel):
 class DupeImage(QtWidgets.QWidget):
     deleted = QtCore.pyqtSignal(str)
 
-    def __init__(self, duplicate: Duplicate, style=".path {color: black;}.hash {color: black;}", text="path: <span class='path'>{duplicate.path}</span><br/>hash: <span class='hash'>{duplicate.digest}</span>", image="cover", parent=None):
+    def __init__(
+        self,
+        duplicate: Duplicate,
+        style=".path {color: black;}.hash {color: black;}",
+        text="path: <span class='path'>{duplicate.path}</span><br/>hash: <span class='hash'>{duplicate.digest}</span>",
+        image="cover",
+        parent=None,
+    ):
         super().__init__(parent)
         self.setLayout(QtWidgets.QVBoxLayout())
         self.image = QQlabel()
@@ -671,11 +644,11 @@ def select_archive(prompt, dupe_set: List[Duplicate]):
     while selection < 0 or selection >= len(dupe_set):
         print(len(dupe_set))
         for i in range(len(dupe_set)):
-            print("{0}. {1}: {2.series} #{2.issue:0>3} {2.year}; extras: {3}".format(
-                i,
-                dupe_set[i].path,
-                dupe_set[i].metadata,
-                ", ".join(sorted(dupe_set[i].extras))))
+            print(
+                "{0}. {1}: {2.series} #{2.issue:0>3} {2.year}; extras: {3}".format(
+                    i, dupe_set[i].path, dupe_set[i].metadata, ", ".join(sorted(dupe_set[i].extras))
+                )
+            )
         sel = input(prompt)
         if sel.isdigit():
             selection = int(sel)
@@ -739,7 +712,7 @@ def unique_dir(file_name):
     while True:
         if not os.path.lexists(file_name):
             return file_name
-        file_name = file_name_parts[0] + ' (' + str(counter) + ')' + file_name_parts[1]
+        file_name = file_name_parts[0] + " (" + str(counter) + ")" + file_name_parts[1]
         counter += 1
 
 
@@ -749,9 +722,9 @@ app = None
 def main():
     signal.signal(signal.SIGINT, sigint_handler)
 
-    parser = argparse.ArgumentParser(description='ComicTagger Duplicate comparison script')
-    parser.add_argument('-w', metavar='workdir', type=str, nargs=1, default=tempfile.mkdtemp(), help='work directory')
-    parser.add_argument('paths', metavar='PATH', type=str, nargs='+', help='Path(s) to search for duplicates')
+    parser = argparse.ArgumentParser(description="ComicTagger Duplicate comparison script")
+    parser.add_argument("-w", metavar="workdir", type=str, nargs=1, default=tempfile.mkdtemp(), help="work directory")
+    parser.add_argument("paths", metavar="PATH", type=str, nargs="+", help="Path(s) to search for duplicates")
     args = parser.parse_args()
 
     settings = ComicTaggerSettings()
@@ -774,10 +747,9 @@ def main():
 
 def sigint_handler(*args):
     """Handler for the SIGINT signal."""
-    sys.stderr.write('\r')
+    sys.stderr.write("\r")
     QtWidgets.QApplication.quit()
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

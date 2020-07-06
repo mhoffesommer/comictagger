@@ -15,12 +15,16 @@
 # limitations under the License.
 
 import os
-import sys
-import signal
-import traceback
 import platform
+import signal
+import sys
+import traceback
 
+from . import cli, utils
+from .comicvinetalker import ComicVineTalker
+from .options import Options
 from .settings import ComicTaggerSettings
+
 # Need to load setting before anything else
 SETTINGS = ComicTaggerSettings()
 
@@ -31,11 +35,6 @@ try:
 except ImportError as e:
     qt_available = False
 
-
-from . import utils
-from . import cli
-from .options import Options
-from .comicvinetalker import ComicVineTalker
 
 def ctmain():
     opts = Options()
@@ -61,29 +60,29 @@ def ctmain():
     if opts.no_gui:
         cli.cli_mode(opts, SETTINGS)
     else:
-        
-        os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = '1'
-        
-        #if platform.system() == "Darwin":
+
+        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+
+        # if platform.system() == "Darwin":
         #    QtWidgets.QApplication.setStyle("macintosh")
-        #else:
+        # else:
         #    QtWidgets.QApplication.setStyle("Fusion")
-            
+
         app = QtWidgets.QApplication(sys.argv)
         if platform.system() == "Darwin":
             # Set the MacOS dock icon
-            app.setWindowIcon(
-            QtGui.QIcon(ComicTaggerSettings.getGraphic('app.png')))
+            app.setWindowIcon(QtGui.QIcon(ComicTaggerSettings.getGraphic("app.png")))
 
         if platform.system() == "Windows":
             # For pure python, tell windows that we're not python,
             # so we can have our own taskbar icon
             import ctypes
-            myappid = u'comictagger' # arbitrary string
+
+            myappid = u"comictagger"  # arbitrary string
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         if platform.system() != "Linux":
-            img = QtGui.QPixmap(ComicTaggerSettings.getGraphic('tags.png'))
+            img = QtGui.QPixmap(ComicTaggerSettings.getGraphic("tags.png"))
 
             splash = QtWidgets.QSplashScreen(img)
             splash.show()
@@ -92,8 +91,7 @@ def ctmain():
 
         try:
             tagger_window = TaggerWindow(opts.file_list, SETTINGS, opts=opts)
-            tagger_window.setWindowIcon(
-                QtGui.QIcon(ComicTaggerSettings.getGraphic('app.png')))
+            tagger_window.setWindowIcon(QtGui.QIcon(ComicTaggerSettings.getGraphic("app.png")))
             tagger_window.show()
 
             if platform.system() != "Linux":
@@ -101,8 +99,4 @@ def ctmain():
 
             sys.exit(app.exec_())
         except Exception as e:
-            QtWidgets.QMessageBox.critical(
-                QtWidgets.QMainWindow(),
-                "Error",
-                "Unhandled exception in app:\n" +
-                traceback.format_exc())
+            QtWidgets.QMessageBox.critical(QtWidgets.QMainWindow(), "Error", "Unhandled exception in app:\n" + traceback.format_exc())

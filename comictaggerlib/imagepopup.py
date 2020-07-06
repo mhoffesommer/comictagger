@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import sys
-#import os
+# import sys
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
@@ -23,14 +23,12 @@ from .settings import ComicTaggerSettings
 
 
 class ImagePopup(QtWidgets.QDialog):
-
     def __init__(self, parent, image_pixmap):
         super(ImagePopup, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('imagepopup.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("imagepopup.ui"), self)
 
-        QtWidgets.QApplication.setOverrideCursor(
-            QtGui.QCursor(QtCore.Qt.WaitCursor))
+        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
 
         # self.setWindowModality(QtCore.Qt.WindowModal)
         self.setWindowFlags(QtCore.Qt.Popup)
@@ -46,15 +44,9 @@ class ImagePopup(QtWidgets.QDialog):
         # translucent screen over it.  Probably can do it better by setting opacity of a
         # widget
         screen = QtWidgets.QApplication.primaryScreen()
-        self.desktopBg = screen.grabWindow(
-            QtWidgets.QApplication.desktop().winId(),
-            0,
-            0,
-            screen_size.width(),
-            screen_size.height())
-        bg = QtGui.QPixmap(ComicTaggerSettings.getGraphic('popup_bg.png'))
-        self.clientBgPixmap = bg.scaled(
-            screen_size.width(), screen_size.height(), QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.desktopBg = screen.grabWindow(QtWidgets.QApplication.desktop().winId(), 0, 0, screen_size.width(), screen_size.height())
+        bg = QtGui.QPixmap(ComicTaggerSettings.getGraphic("popup_bg.png"))
+        self.clientBgPixmap = bg.scaled(screen_size.width(), screen_size.height(), QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
         self.setMask(self.clientBgPixmap.mask())
 
         self.applyImagePixmap()
@@ -73,11 +65,9 @@ class ImagePopup(QtWidgets.QDialog):
         win_h = self.height()
         win_w = self.width()
 
-        if self.imagePixmap.width(
-        ) > win_w or self.imagePixmap.height() > win_h:
+        if self.imagePixmap.width() > win_w or self.imagePixmap.height() > win_h:
             # scale the pixmap to fit in the frame
-            display_pixmap = self.imagePixmap.scaled(
-                win_w, win_h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            display_pixmap = self.imagePixmap.scaled(win_w, win_h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             self.lblImage.setPixmap(display_pixmap)
         else:
             display_pixmap = self.imagePixmap

@@ -7,26 +7,27 @@
 # Kept here for further research
 
 from __future__ import print_function
-from setuptools import setup
-from setuptools import dist
-from setuptools import Command
-import setuptools.command.build_py 
-import setuptools.command.install
-import subprocess
+
 import os
-import sys
-import shutil
 import platform
+import shutil
+import subprocess
+import sys
 import tempfile
+
+import setuptools.command.build_py
+import setuptools.command.install
+from setuptools import Command, dist, setup
+
 import comictaggerlib.ctversion
 
-python_requires='>=3',
+python_requires = (">=3",)
 
 
-with open('requirements.txt') as f:
+with open("requirements.txt") as f:
     required = f.read().splitlines()
 # Always require PyQt5 on Windows and Mac
-if platform.system() in [ "Windows", "Darwin" ]:
+if platform.system() in ["Windows", "Darwin"]:
     required.append("PyQt5")
 
 platform_data_files = []
@@ -140,44 +141,38 @@ def postInstall(scripts_folder):
             os.symlink(sys.executable, mac_python_link) 
 """
 
-setup(name="comictagger",
-      install_requires=required,
-      description="A cross-platform GUI/CLI app for writing metadata to comic archives",
-      author="ComicTagger team",
-      author_email="comictagger@gmail.com",
-      url="https://github.com/comictagger/comictagger",      
-      packages=["comictaggerlib", "comicapi"],
-      package_data={
-          'comictaggerlib': ['ui/*', 'graphics/*'],
-      },
-      entry_points=dict(console_scripts=['comictagger=comictaggerlib.main:ctmain']),
-      data_files=platform_data_files,
-      setup_requires=[
-        "setuptools_scm"
-      ],
-      use_scm_version={
-          'write_to': 'comictaggerlib/ctversion.py'
-      },
-      classifiers=[
-            "Development Status :: 4 - Beta",
-            "Environment :: Console",
-            "Environment :: Win32 (MS Windows)",
-            "Environment :: MacOS X",
-            "Environment :: X11 Applications :: Qt",
-            "Intended Audience :: End Users/Desktop",
-            "License :: OSI Approved :: Apache Software License",
-            "Natural Language :: English",
-            "Operating System :: OS Independent",
-            "Programming Language :: Python :: 3.5",
-            "Programming Language :: Python :: 3.6",
-            "Topic :: Utilities",
-            "Topic :: Other/Nonlisted Topic",
-            "Topic :: Multimedia :: Graphics"
-      ],
-      keywords=['comictagger', 'comics', 'comic', 'metadata', 'tagging', 'tagger'],
-      license="Apache License 2.0",
-
-      long_description="""
+setup(
+    name="comictagger",
+    install_requires=required,
+    description="A cross-platform GUI/CLI app for writing metadata to comic archives",
+    author="ComicTagger team",
+    author_email="comictagger@gmail.com",
+    url="https://github.com/comictagger/comictagger",
+    packages=["comictaggerlib", "comicapi"],
+    package_data={"comictaggerlib": ["ui/*", "graphics/*"],},
+    entry_points=dict(console_scripts=["comictagger=comictaggerlib.main:ctmain"]),
+    data_files=platform_data_files,
+    setup_requires=["setuptools_scm"],
+    use_scm_version={"write_to": "comictaggerlib/ctversion.py"},
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
+        "Environment :: Win32 (MS Windows)",
+        "Environment :: MacOS X",
+        "Environment :: X11 Applications :: Qt",
+        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: Apache Software License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Topic :: Utilities",
+        "Topic :: Other/Nonlisted Topic",
+        "Topic :: Multimedia :: Graphics",
+    ],
+    keywords=["comictagger", "comics", "comic", "metadata", "tagging", "tagger"],
+    license="Apache License 2.0",
+    long_description="""
 ComicTagger is a multi-platform app for writing metadata to digital comics, written in Python and PyQt.
 
 Features:
@@ -190,5 +185,5 @@ Features:
 * Reads and writes RAR and Zip archives (external tools needed for writing RAR)
 * Command line interface (CLI) on all platforms (including Windows), which supports batch operations, and which can be used in native scripts for complex operations.
 * Can run without PyQt5 installed 
-"""
-      )
+""",
+)

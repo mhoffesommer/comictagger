@@ -20,13 +20,12 @@ comics industry throws at us.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import utils
-#import math
-#import re
+# import utils
+# import math
+# import re
 
 
 class IssueString:
-
     def __init__(self, text):
 
         # break up the issue number string into 2 parts: the numeric and suffix string.
@@ -44,12 +43,12 @@ class IssueString:
             return
 
         # skip the minus sign if it's first
-        if text[0] == '-':
+        if text[0] == "-":
             start = 1
         else:
             start = 0
 
-        text = text.strip(' \t\r\n()')
+        text = text.strip(" \t\r\n()")
 
         # if it's still not numeric at start skip it
         if text[start].isdigit() or text[start] == ".":
@@ -78,7 +77,7 @@ class IssueString:
                 idx = 0
 
             part1 = text[0:idx]
-            part2 = text[idx:len(text)]
+            part2 = text[idx : len(text)]
 
             if "of" in part2:
                 part2, _, after = part2.partition("of")
@@ -127,9 +126,9 @@ class IssueString:
         # return the float, with no suffix
         if self.suffix == "½":
             if self.num is not None:
-                return self.num + .5
+                return self.num + 0.5
             else:
-                return .5
+                return 0.5
         return self.num
 
     def asInt(self):

@@ -14,40 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import os
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from .settings import ComicTaggerSettings
-#from settingswindow import SettingsWindow
-#from filerenamer import FileRenamer
-#import utils
+
+# from settingswindow import SettingsWindow
+# from filerenamer import FileRenamer
+# import utils
 
 
 class AutoTagStartWindow(QtWidgets.QDialog):
-
     def __init__(self, parent, settings, msg):
         super(AutoTagStartWindow, self).__init__(parent)
 
-        uic.loadUi(
-            ComicTaggerSettings.getUIFile('autotagstartwindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("autotagstartwindow.ui"), self)
         self.label.setText(msg)
 
-        self.setWindowFlags(self.windowFlags() &
-                            ~QtCore.Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
 
         self.settings = settings
 
         self.cbxSaveOnLowConfidence.setCheckState(QtCore.Qt.Unchecked)
         self.cbxDontUseYear.setCheckState(QtCore.Qt.Unchecked)
         self.cbxAssumeIssueOne.setCheckState(QtCore.Qt.Unchecked)
-        self.cbxIgnoreLeadingDigitsInFilename.setCheckState(
-            QtCore.Qt.Unchecked)
+        self.cbxIgnoreLeadingDigitsInFilename.setCheckState(QtCore.Qt.Unchecked)
         self.cbxRemoveAfterSuccess.setCheckState(QtCore.Qt.Unchecked)
         self.cbxSpecifySearchString.setCheckState(QtCore.Qt.Unchecked)
         self.cbxAutoImprint.setCheckState(QtCore.Qt.Unchecked)
-        self.leNameLengthMatchTolerance.setText(
-            str(self.settings.id_length_delta_thresh))
+        self.leNameLengthMatchTolerance.setText(str(self.settings.id_length_delta_thresh))
         self.leSearchString.setEnabled(False)
 
         if self.settings.save_on_low_confidence:
@@ -57,8 +53,7 @@ class AutoTagStartWindow(QtWidgets.QDialog):
         if self.settings.assume_1_if_no_issue_num:
             self.cbxAssumeIssueOne.setCheckState(QtCore.Qt.Checked)
         if self.settings.ignore_leading_numbers_in_filename:
-            self.cbxIgnoreLeadingDigitsInFilename.setCheckState(
-                QtCore.Qt.Checked)
+            self.cbxIgnoreLeadingDigitsInFilename.setCheckState(QtCore.Qt.Checked)
         if self.settings.remove_archive_after_successful_match:
             self.cbxRemoveAfterSuccess.setCheckState(QtCore.Qt.Checked)
         if self.settings.wait_and_retry_on_rate_limit:
@@ -66,31 +61,26 @@ class AutoTagStartWindow(QtWidgets.QDialog):
         if self.settings.auto_imprint:
             self.cbxAutoImprint.setCheckState(QtCore.Qt.Checked)
 
-
-        nlmtTip = (
-            """ <html>The <b>Name Length Match Tolerance</b> is for eliminating automatic
+        nlmtTip = """ <html>The <b>Name Length Match Tolerance</b> is for eliminating automatic
                 search matches that are too long compared to your series name search. The higher
                 it is, the more likely to have a good match, but each search will take longer and
                 use more bandwidth. Too low, and only the very closest lexical matches will be
-                explored.</html>""")
+                explored.</html>"""
 
         self.leNameLengthMatchTolerance.setToolTip(nlmtTip)
 
-        ssTip = (
-            """<html>
+        ssTip = """<html>
             The <b>series search string</b> specifies the search string to be used for all selected archives.
             Use this when trying to match archives with hard-to-parse or incorrect filenames.  All archives selected
             should be from the same series.
             </html>"""
-        )
         self.leSearchString.setToolTip(ssTip)
         self.cbxSpecifySearchString.setToolTip(ssTip)
 
         validator = QtGui.QIntValidator(0, 99, self)
         self.leNameLengthMatchTolerance.setValidator(validator)
 
-        self.cbxSpecifySearchString.stateChanged.connect(
-            self.searchStringToggle)
+        self.cbxSpecifySearchString.stateChanged.connect(self.searchStringToggle)
 
         self.autoSaveOnLow = False
         self.dontUseYear = False
@@ -113,8 +103,7 @@ class AutoTagStartWindow(QtWidgets.QDialog):
         self.assumeIssueOne = self.cbxAssumeIssueOne.isChecked()
         self.ignoreLeadingDigitsInFilename = self.cbxIgnoreLeadingDigitsInFilename.isChecked()
         self.removeAfterSuccess = self.cbxRemoveAfterSuccess.isChecked()
-        self.nameLengthMatchTolerance = int(
-            self.leNameLengthMatchTolerance.text())
+        self.nameLengthMatchTolerance = int(self.leNameLengthMatchTolerance.text())
         self.waitAndRetryOnRateLimit = self.cbxWaitForRateLimit.isChecked()
 
         # persist some settings

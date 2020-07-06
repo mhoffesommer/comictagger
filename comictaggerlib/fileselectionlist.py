@@ -15,37 +15,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import platform
 import os
-#import os
+import platform
+
+# import os
 import sys
 
+from PyQt5 import uic
 from PyQt5.QtCore import *
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
 
-from .settings import ComicTaggerSettings
+from comictaggerlib.ui.qtutils import centerWindowOnParent, reduceWidgetFontSize
+
+from . import utils
 from .comicarchive import ComicArchive
 from .optionalmsgdialog import OptionalMessageDialog
-from comictaggerlib.ui.qtutils import reduceWidgetFontSize, centerWindowOnParent
-from . import utils
-#from comicarchive import MetaDataStyle
-#from genericmetadata import GenericMetadata, PageType
+from .settings import ComicTaggerSettings
+
+# from comicarchive import MetaDataStyle
+# from genericmetadata import GenericMetadata, PageType
 
 
 class FileTableWidgetItem(QTableWidgetItem):
-
     def __lt__(self, other):
-        #return (self.data(Qt.UserRole).toBool() <
+        # return (self.data(Qt.UserRole).toBool() <
         #        other.data(Qt.UserRole).toBool())
-        return (self.data(Qt.UserRole) <
-                other.data(Qt.UserRole))
+        return self.data(Qt.UserRole) < other.data(Qt.UserRole)
 
 
-class FileInfo():
-
+class FileInfo:
     def __init__(self, ca):
         self.ca = ca
 
@@ -66,14 +66,14 @@ class FileSelectionList(QWidget):
     def __init__(self, parent, settings):
         super(FileSelectionList, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('fileselectionlist.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("fileselectionlist.ui"), self)
 
         self.settings = settings
 
         reduceWidgetFontSize(self.twList)
 
         self.twList.setColumnCount(6)
-        #self.twlist.setHorizontalHeaderLabels (["File", "Folder", "CR", "CBL", ""])
+        # self.twlist.setHorizontalHeaderLabels (["File", "Folder", "CR", "CBL", ""])
         # self.twList.horizontalHeader().setStretchLastSection(True)
         self.twList.currentItemChanged.connect(self.currentItemChangedCB)
 
@@ -86,8 +86,8 @@ class FileSelectionList(QWidget):
         self.separator = QAction("", self)
         self.separator.setSeparator(True)
 
-        selectAllAction.setShortcut('Ctrl+A')
-        removeAction.setShortcut('Ctrl+X')
+        selectAllAction.setShortcut("Ctrl+A")
+        removeAction.setShortcut("Ctrl+X")
 
         selectAllAction.triggered.connect(self.selectAll)
         removeAction.triggered.connect(self.removeSelection)
@@ -111,24 +111,10 @@ class FileSelectionList(QWidget):
         self.modifiedFlag = modified
 
     def selectAll(self):
-        self.twList.setRangeSelected(
-            QTableWidgetSelectionRange(
-                0,
-                0,
-                self.twList.rowCount() -
-                1,
-                5),
-            True)
+        self.twList.setRangeSelected(QTableWidgetSelectionRange(0, 0, self.twList.rowCount() - 1, 5), True)
 
     def deselectAll(self):
-        self.twList.setRangeSelected(
-            QTableWidgetSelectionRange(
-                0,
-                0,
-                self.twList.rowCount() -
-                1,
-                5),
-            False)
+        self.twList.setRangeSelected(QTableWidgetSelectionRange(0, 0, self.twList.rowCount() - 1, 5), False)
 
     def removeArchiveList(self, ca_list):
         self.twList.setSortingEnabled(False)
@@ -141,8 +127,7 @@ class FileSelectionList(QWidget):
         self.twList.setSortingEnabled(True)
 
     def getArchiveByRow(self, row):
-        fi = self.twList.item(row, FileSelectionList.dataColNum).data(
-            Qt.UserRole)
+        fi = self.twList.item(row, FileSelectionList.dataColNum).data(Qt.UserRole)
         return fi.ca
 
     def getCurrentArchive(self):
@@ -158,9 +143,7 @@ class FileSelectionList(QWidget):
             return
 
         if self.twList.currentRow() in row_list:
-            if not self.modifiedFlagVerification(
-                    "Remove Archive",
-                    "If you close this archive, data in the form will be lost.  Are you sure?"):
+            if not self.modifiedFlagVerification("Remove Archive", "If you close this archive, data in the form will be lost.  Are you sure?"):
                 return
 
         row_list.sort()
@@ -195,9 +178,9 @@ class FileSelectionList(QWidget):
         progdialog.setWindowModality(Qt.ApplicationModal)
         progdialog.setMinimumDuration(300)
         centerWindowOnParent(progdialog)
-        #QCoreApplication.processEvents()
-        #progdialog.show()
-        
+        # QCoreApplication.processEvents()
+        # progdialog.show()
+
         QCoreApplication.processEvents()
         firstAdded = None
         self.twList.setSortingEnabled(False)
@@ -205,14 +188,14 @@ class FileSelectionList(QWidget):
             QCoreApplication.processEvents()
             if progdialog.wasCanceled():
                 break
-            progdialog.setValue(idx+1)
+            progdialog.setValue(idx + 1)
             progdialog.setLabelText(f)
             centerWindowOnParent(progdialog)
             QCoreApplication.processEvents()
             row = self.addPathItem(f)
             if firstAdded is None and row is not None:
                 firstAdded = row
- 
+
         progdialog.hide()
         QCoreApplication.processEvents()
 
@@ -220,13 +203,9 @@ class FileSelectionList(QWidget):
             self.twList.selectRow(firstAdded)
         else:
             if len(pathlist) == 1 and os.path.isfile(pathlist[0]):
-                QMessageBox.information(self, self.tr("File Open"), self.tr(
-                    "Selected file doesn't seem to be a comic archive."))
+                QMessageBox.information(self, self.tr("File Open"), self.tr("Selected file doesn't seem to be a comic archive."))
             else:
-                QMessageBox.information(
-                    self,
-                    self.tr("File/Folder Open"),
-                    self.tr("No readable comic archives were found."))
+                QMessageBox.information(self, self.tr("File/Folder Open"), self.tr("No readable comic archives were found."))
 
         self.twList.setSortingEnabled(True)
 
@@ -269,10 +248,7 @@ class FileSelectionList(QWidget):
         if self.isListDupe(path):
             return self.getCurrentListRow(path)
 
-        ca = ComicArchive(
-            path,
-            self.settings.rar_exe_path,
-            ComicTaggerSettings.getGraphic('nocover.png'))
+        ca = ComicArchive(path, self.settings.rar_exe_path, ComicTaggerSettings.getGraphic("nocover.png"))
 
         if ca.seemsToBeAComicArchive():
             row = self.twList.rowCount()
@@ -289,12 +265,10 @@ class FileSelectionList(QWidget):
 
             filename_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             filename_item.setData(Qt.UserRole, fi)
-            self.twList.setItem(
-                row, FileSelectionList.fileColNum, filename_item)
+            self.twList.setItem(row, FileSelectionList.fileColNum, filename_item)
 
             folder_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            self.twList.setItem(
-                row, FileSelectionList.folderColNum, folder_item)
+            self.twList.setItem(row, FileSelectionList.folderColNum, folder_item)
 
             type_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             self.twList.setItem(row, FileSelectionList.typeColNum, type_item)
@@ -309,16 +283,14 @@ class FileSelectionList(QWidget):
 
             readonly_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             readonly_item.setTextAlignment(Qt.AlignHCenter)
-            self.twList.setItem(
-                row, FileSelectionList.readonlyColNum, readonly_item)
+            self.twList.setItem(row, FileSelectionList.readonlyColNum, readonly_item)
 
             self.updateRow(row)
 
             return row
 
     def updateRow(self, row):
-        fi = self.twList.item(row, FileSelectionList.dataColNum).data(
-            Qt.UserRole) #.toPyObject()
+        fi = self.twList.item(row, FileSelectionList.dataColNum).data(Qt.UserRole)  # .toPyObject()
 
         filename_item = self.twList.item(row, FileSelectionList.fileColNum)
         folder_item = self.twList.item(row, FileSelectionList.folderColNum)
@@ -396,27 +368,22 @@ class FileSelectionList(QWidget):
         old_idx = -1
         if prev is not None:
             old_idx = prev.row()
-        #print("old {0} new {1}".format(old_idx, new_idx))
+        # print("old {0} new {1}".format(old_idx, new_idx))
 
         if old_idx == new_idx:
             return
 
         # don't allow change if modified
         if prev is not None and new_idx != old_idx:
-            if not self.modifiedFlagVerification(
-                    "Change Archive",
-                    "If you change archives now, data in the form will be lost.  Are you sure?"):
-                self.twList.currentItemChanged.disconnect(
-                    self.currentItemChangedCB)
+            if not self.modifiedFlagVerification("Change Archive", "If you change archives now, data in the form will be lost.  Are you sure?"):
+                self.twList.currentItemChanged.disconnect(self.currentItemChangedCB)
                 self.twList.setCurrentItem(prev)
-                self.twList.currentItemChanged.connect(
-                    self.currentItemChangedCB)
+                self.twList.currentItemChanged.connect(self.currentItemChangedCB)
                 # Need to defer this revert selection, for some reason
                 QTimer.singleShot(1, self.revertSelection)
                 return
 
-        fi = self.twList.item(new_idx, FileSelectionList.dataColNum).data(
-            Qt.UserRole) #.toPyObject()
+        fi = self.twList.item(new_idx, FileSelectionList.dataColNum).data(Qt.UserRole)  # .toPyObject()
         self.selectionChanged.emit(QVariant(fi))
 
     def revertSelection(self):
@@ -424,10 +391,7 @@ class FileSelectionList(QWidget):
 
     def modifiedFlagVerification(self, title, desc):
         if self.modifiedFlag:
-            reply = QMessageBox.question(self,
-                                         self.tr(title),
-                                         self.tr(desc),
-                                         QMessageBox.Yes, QMessageBox.No)
+            reply = QMessageBox.question(self, self.tr(title), self.tr(desc), QMessageBox.Yes, QMessageBox.No)
 
             if reply != QMessageBox.Yes:
                 return False
@@ -436,12 +400,12 @@ class FileSelectionList(QWidget):
 
 # Attempt to use a special checkbox widget in the cell.
 # Couldn't figure out how to disable it with "enabled" colors
-#w = QWidget()
-#cb = QCheckBox(w)
+# w = QWidget()
+# cb = QCheckBox(w)
 # cb.setCheckState(Qt.Checked)
-#layout = QHBoxLayout()
+# layout = QHBoxLayout()
 # layout.addWidget(cb)
 # layout.setAlignment(Qt.AlignHCenter)
 # layout.setMargin(2)
 # w.setLayout(layout)
-#self.twList.setCellWidget(row, 2, w)
+# self.twList.setCellWidget(row, 2, w)

@@ -15,23 +15,24 @@
 # limitations under the License.
 
 import xml.etree.ElementTree as ET
-#from datetime import datetime
-#from pprint import pprint
-#import zipfile
 
-from .genericmetadata import GenericMetadata
 from . import utils
+from .genericmetadata import GenericMetadata
+
+# from datetime import datetime
+# from pprint import pprint
+# import zipfile
 
 
 class CoMet:
 
-    writer_synonyms = ['writer', 'plotter', 'scripter']
-    penciller_synonyms = ['artist', 'penciller', 'penciler', 'breakdowns']
-    inker_synonyms = ['inker', 'artist', 'finishes']
-    colorist_synonyms = ['colorist', 'colourist', 'colorer', 'colourer']
-    letterer_synonyms = ['letterer']
-    cover_synonyms = ['cover', 'covers', 'coverartist', 'cover artist']
-    editor_synonyms = ['editor']
+    writer_synonyms = ["writer", "plotter", "scripter"]
+    penciller_synonyms = ["artist", "penciller", "penciler", "breakdowns"]
+    inker_synonyms = ["inker", "artist", "finishes"]
+    colorist_synonyms = ["colorist", "colourist", "colorer", "colourer"]
+    letterer_synonyms = ["letterer"]
+    cover_synonyms = ["cover", "covers", "coverartist", "cover artist"]
+    editor_synonyms = ["editor"]
 
     def metadataFromString(self, string):
 
@@ -68,10 +69,9 @@ class CoMet:
 
         # build a tree structure
         root = ET.Element("comet")
-        root.attrib['xmlns:comet'] = "http://www.denvog.com/comet/"
-        root.attrib['xmlns:xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
-        root.attrib[
-            'xsi:schemaLocation'] = "http://www.denvog.com http://www.denvog.com/comet/comet.xsd"
+        root.attrib["xmlns:comet"] = "http://www.denvog.com/comet/"
+        root.attrib["xmlns:xsi"] = "http://www.w3.org/2001/XMLSchema-instance"
+        root.attrib["xsi:schemaLocation"] = "http://www.denvog.com http://www.denvog.com/comet/comet.xsd"
 
         # helper func
         def assign(comet_entry, md_entry):
@@ -81,39 +81,39 @@ class CoMet:
         # title is manditory
         if md.title is None:
             md.title = ""
-        assign('title', md.title)
-        assign('series', md.series)
-        assign('issue', md.issue)  # must be int??
-        assign('volume', md.volume)
-        assign('description', md.comments)
-        assign('publisher', md.publisher)
-        assign('pages', md.pageCount)
-        assign('format', md.format)
-        assign('language', md.language)
-        assign('rating', md.maturityRating)
-        assign('price', md.price)
-        assign('isVersionOf', md.isVersionOf)
-        assign('rights', md.rights)
-        assign('identifier', md.identifier)
-        assign('lastMark', md.lastMark)
-        assign('genre', md.genre)   # TODO repeatable
+        assign("title", md.title)
+        assign("series", md.series)
+        assign("issue", md.issue)  # must be int??
+        assign("volume", md.volume)
+        assign("description", md.comments)
+        assign("publisher", md.publisher)
+        assign("pages", md.pageCount)
+        assign("format", md.format)
+        assign("language", md.language)
+        assign("rating", md.maturityRating)
+        assign("price", md.price)
+        assign("isVersionOf", md.isVersionOf)
+        assign("rights", md.rights)
+        assign("identifier", md.identifier)
+        assign("lastMark", md.lastMark)
+        assign("genre", md.genre)  # TODO repeatable
 
         if md.characters is not None:
-            char_list = [c.strip() for c in md.characters.split(',')]
+            char_list = [c.strip() for c in md.characters.split(",")]
             for c in char_list:
-                assign('character', c)
+                assign("character", c)
 
         if md.manga is not None and md.manga == "YesAndRightToLeft":
-            assign('readingDirection', "rtl")
+            assign("readingDirection", "rtl")
 
         date_str = ""
         if md.year is not None:
             date_str = str(md.year).zfill(4)
             if md.month is not None:
                 date_str += "-" + str(md.month).zfill(2)
-            assign('date', date_str)
+            assign("date", date_str)
 
-        assign('coverImage', md.coverImage)
+        assign("coverImage", md.coverImage)
 
         # need to specially process the credits, since they are structured
         # differently than CIX
@@ -128,47 +128,26 @@ class CoMet:
         # loop thru credits, and build a list for each role that CoMet supports
         for credit in metadata.credits:
 
-            if credit['role'].lower() in set(self.writer_synonyms):
-                ET.SubElement(
-                    root,
-                    'writer').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.writer_synonyms):
+                ET.SubElement(root, "writer").text = "{0}".format(credit["person"])
 
-            if credit['role'].lower() in set(self.penciller_synonyms):
-                ET.SubElement(
-                    root,
-                    'penciller').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.penciller_synonyms):
+                ET.SubElement(root, "penciller").text = "{0}".format(credit["person"])
 
-            if credit['role'].lower() in set(self.inker_synonyms):
-                ET.SubElement(
-                    root,
-                    'inker').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.inker_synonyms):
+                ET.SubElement(root, "inker").text = "{0}".format(credit["person"])
 
-            if credit['role'].lower() in set(self.colorist_synonyms):
-                ET.SubElement(
-                    root,
-                    'colorist').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.colorist_synonyms):
+                ET.SubElement(root, "colorist").text = "{0}".format(credit["person"])
 
-            if credit['role'].lower() in set(self.letterer_synonyms):
-                ET.SubElement(
-                    root,
-                    'letterer').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.letterer_synonyms):
+                ET.SubElement(root, "letterer").text = "{0}".format(credit["person"])
 
-            if credit['role'].lower() in set(self.cover_synonyms):
-                ET.SubElement(
-                    root,
-                    'coverDesigner').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.cover_synonyms):
+                ET.SubElement(root, "coverDesigner").text = "{0}".format(credit["person"])
 
-            if credit['role'].lower() in set(self.editor_synonyms):
-                ET.SubElement(
-                    root,
-                    'editor').text = "{0}".format(
-                    credit['person'])
+            if credit["role"].lower() in set(self.editor_synonyms):
+                ET.SubElement(root, "editor").text = "{0}".format(credit["person"])
 
         # self pretty-print
         self.indent(root)
@@ -181,7 +160,7 @@ class CoMet:
 
         root = tree.getroot()
 
-        if root.tag != 'comet':
+        if root.tag != "comet":
             raise 1
             return None
 
@@ -196,56 +175,50 @@ class CoMet:
             else:
                 return None
 
-        md.series = xlate('series')
-        md.title = xlate('title')
-        md.issue = xlate('issue')
-        md.volume = xlate('volume')
-        md.comments = xlate('description')
-        md.publisher = xlate('publisher')
-        md.language = xlate('language')
-        md.format = xlate('format')
-        md.pageCount = xlate('pages')
-        md.maturityRating = xlate('rating')
-        md.price = xlate('price')
-        md.isVersionOf = xlate('isVersionOf')
-        md.rights = xlate('rights')
-        md.identifier = xlate('identifier')
-        md.lastMark = xlate('lastMark')
-        md.genre = xlate('genre')  # TODO - repeatable field
+        md.series = xlate("series")
+        md.title = xlate("title")
+        md.issue = xlate("issue")
+        md.volume = xlate("volume")
+        md.comments = xlate("description")
+        md.publisher = xlate("publisher")
+        md.language = xlate("language")
+        md.format = xlate("format")
+        md.pageCount = xlate("pages")
+        md.maturityRating = xlate("rating")
+        md.price = xlate("price")
+        md.isVersionOf = xlate("isVersionOf")
+        md.rights = xlate("rights")
+        md.identifier = xlate("identifier")
+        md.lastMark = xlate("lastMark")
+        md.genre = xlate("genre")  # TODO - repeatable field
 
-        date = xlate('date')
+        date = xlate("date")
         if date is not None:
-            parts = date.split('-')
+            parts = date.split("-")
             if len(parts) > 0:
                 md.year = parts[0]
             if len(parts) > 1:
                 md.month = parts[1]
 
-        md.coverImage = xlate('coverImage')
+        md.coverImage = xlate("coverImage")
 
-        readingDirection = xlate('readingDirection')
+        readingDirection = xlate("readingDirection")
         if readingDirection is not None and readingDirection == "rtl":
             md.manga = "YesAndRightToLeft"
 
         # loop for character tags
         char_list = []
         for n in root:
-            if n.tag == 'character':
+            if n.tag == "character":
                 char_list.append(n.text.strip())
         md.characters = utils.listToString(char_list)
 
         # Now extract the credit info
         for n in root:
-            if (n.tag == 'writer' or
-                n.tag == 'penciller' or
-                n.tag == 'inker' or
-                n.tag == 'colorist' or
-                n.tag == 'letterer' or
-                n.tag == 'editor'
-                ):
+            if n.tag == "writer" or n.tag == "penciller" or n.tag == "inker" or n.tag == "colorist" or n.tag == "letterer" or n.tag == "editor":
                 metadata.addCredit(n.text.strip(), n.tag.title())
 
-            if n.tag == 'coverDesigner':
+            if n.tag == "coverDesigner":
                 metadata.addCredit(n.text.strip(), "Cover")
 
         metadata.isEmpty = False
@@ -257,7 +230,7 @@ class CoMet:
         try:
             tree = ET.ElementTree(ET.fromstring(string))
             root = tree.getroot()
-            if root.tag != 'comet':
+            if root.tag != "comet":
                 raise Exception
         except:
             return False
@@ -268,7 +241,7 @@ class CoMet:
 
         tree = self.convertMetadataToXML(self, metadata)
         # ET.dump(tree)
-        tree.write(filename, encoding='utf-8')
+        tree.write(filename, encoding="utf-8")
 
     def readFromExternalFile(self, filename):
 

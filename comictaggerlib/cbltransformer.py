@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import os
+# import os
 
-#import utils
+# import utils
 
 
 class CBLTransformer:
-
     def __init__(self, metadata, settings):
         self.metadata = metadata
         self.settings = settings
@@ -33,7 +32,7 @@ class CBLTransformer:
 
         def add_string_list_to_tags(str_list):
             if str_list is not None and str_list != "":
-                items = [s.strip() for s in str_list.split(',')]
+                items = [s.strip() for s in str_list.split(",")]
                 for item in items:
                     append_to_tags_if_unique(item)
 
@@ -44,25 +43,25 @@ class CBLTransformer:
                 lone_credit = None
                 count = 0
                 for c in self.metadata.credits:
-                    if c['role'].lower() in role_list:
+                    if c["role"].lower() in role_list:
                         count += 1
                         lone_credit = c
                     if count > 1:
                         lone_credit = None
                         break
                 if lone_credit is not None:
-                    lone_credit['primary'] = True
+                    lone_credit["primary"] = True
                 return lone_credit, count
 
             # need to loop three times, once for 'writer', 'artist', and then
             # 'penciler' if no artist
-            setLonePrimary(['writer'])
-            c, count = setLonePrimary(['artist'])
+            setLonePrimary(["writer"])
+            c, count = setLonePrimary(["artist"])
             if c is None and count == 0:
-                c, count = setLonePrimary(['penciler', 'penciller'])
+                c, count = setLonePrimary(["penciler", "penciller"])
                 if c is not None:
-                    c['primary'] = False
-                    self.metadata.addCredit(c['person'], 'Artist', True)
+                    c["primary"] = False
+                    self.metadata.addCredit(c["person"], "Artist", True)
 
         if self.settings.copy_characters_to_tags:
             add_string_list_to_tags(self.metadata.characters)

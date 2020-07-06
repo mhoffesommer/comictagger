@@ -14,20 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import platform
 import os
+import platform
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from .settings import ComicTaggerSettings
+from . import utils
 from .comicvinecacher import ComicVineCacher
 from .comicvinetalker import ComicVineTalker
-from .imagefetcher import ImageFetcher
 from .filerenamer import FileRenamer
 from .genericmetadata import GenericMetadata
-from . import utils
-
+from .imagefetcher import ImageFetcher
+from .settings import ComicTaggerSettings
 
 windowsRarHelp = """
                  <html><head/><body><p>To write to CBR/RAR archives,
@@ -55,19 +54,18 @@ macRarHelp = """
                  </p>Once homebrew is installed, run: <b>brew install caskroom/cask/rar</b></body></html>
                 """
 
-class SettingsWindow(QtWidgets.QDialog):
 
+class SettingsWindow(QtWidgets.QDialog):
     def __init__(self, parent, settings):
         super(SettingsWindow, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('settingswindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("settingswindow.ui"), self)
 
-        self.setWindowFlags(self.windowFlags() &
-                            ~QtCore.Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
 
         self.settings = settings
-        self.name = "Settings"        
-            
+        self.name = "Settings"
+
         if platform.system() == "Windows":
             self.lblRarHelp.setText(windowsRarHelp)
 
@@ -82,26 +80,22 @@ class SettingsWindow(QtWidgets.QDialog):
             self.name = "Preferences"
 
         self.setWindowTitle("ComicTagger " + self.name)
-        self.lblDefaultSettings.setText(
-            "Revert to default " + self.name.lower())
+        self.lblDefaultSettings.setText("Revert to default " + self.name.lower())
         self.btnResetSettings.setText("Default " + self.name)
 
-        nldtTip = (
-            """<html>The <b>Default Name Length Match Tolerance</b> is for eliminating automatic
+        nldtTip = """<html>The <b>Default Name Length Match Tolerance</b> is for eliminating automatic
                 search matches that are too long compared to your series name search. The higher
                 it is, the more likely to have a good match, but each search will take longer and
                 use more bandwidth. Too low, and only the very closest lexical matches will be
-                explored.</html>""")
+                explored.</html>"""
 
         self.leNameLengthDeltaThresh.setToolTip(nldtTip)
 
-        pblTip = (
-            """<html>
+        pblTip = """<html>
             The <b>Publisher Blacklist</b> is for eliminating automatic matches to certain publishers
             that you know are incorrect. Useful for avoiding international re-prints with same
             covers or series names. Enter publisher names separated by commas.
             </html>"""
-        )
         self.tePublisherBlacklist.setToolTip(pblTip)
 
         validator = QtGui.QIntValidator(1, 4, self)
@@ -143,7 +137,7 @@ class SettingsWindow(QtWidgets.QDialog):
         md.alternateSeries = "None"
         md.alternateNumber = 4.4
         md.alternateCount = 4444
-        md.imprint = 'Welch Publishing'
+        md.imprint = "Welch Publishing"
         md.notes = "This doesn't actually exist"
         md.webLink = "https://example.com/series name/1"
         md.format = "Box Set"
@@ -160,9 +154,9 @@ class SettingsWindow(QtWidgets.QDialog):
         md.teams = "None"
         md.locations = "Earth, 444 B.C."
 
-        md.credits = [dict({'role': 'Everything', 'person': 'lordwelch', 'primary': True})]
+        md.credits = [dict({"role": "Everything", "person": "lordwelch", "primary": True})]
         md.tags = ["testing", "not testing", "fake"]
-        md.pages = [dict({'Image': '0', 'Type': 'Front Cover'}), dict({'Image': '1', 'Type': 'Story'})]
+        md.pages = [dict({"Image": "0", "Type": "Front Cover"}), dict({"Image": "1", "Type": "Story"})]
 
         # Some CoMet-only items
         md.price = 0.00
@@ -181,10 +175,8 @@ class SettingsWindow(QtWidgets.QDialog):
 
         # Copy values from settings to form
         self.leRarExePath.setText(self.settings.rar_exe_path)
-        self.leNameLengthDeltaThresh.setText(
-            str(self.settings.id_length_delta_thresh))
-        self.tePublisherBlacklist.setPlainText(
-            self.settings.id_publisher_blacklist)
+        self.leNameLengthDeltaThresh.setText(str(self.settings.id_length_delta_thresh))
+        self.tePublisherBlacklist.setPlainText(self.settings.id_publisher_blacklist)
 
         if self.settings.check_for_new_version:
             self.cbxCheckForNewVersion.setCheckState(QtCore.Qt.Checked)
@@ -215,15 +207,12 @@ class SettingsWindow(QtWidgets.QDialog):
         if self.settings.copy_weblink_to_comments:
             self.cbxCopyWebLinkToComments.setCheckState(QtCore.Qt.Checked)
         if self.settings.apply_cbl_transform_on_cv_import:
-            self.cbxApplyCBLTransformOnCVIMport.setCheckState(
-                QtCore.Qt.Checked)
+            self.cbxApplyCBLTransformOnCVIMport.setCheckState(QtCore.Qt.Checked)
         if self.settings.apply_cbl_transform_on_bulk_operation:
-            self.cbxApplyCBLTransformOnBatchOperation.setCheckState(
-                QtCore.Qt.Checked)
+            self.cbxApplyCBLTransformOnBatchOperation.setCheckState(QtCore.Qt.Checked)
 
         self.leRenameTemplate.setText(self.settings.rename_template)
-        self.leIssueNumPadding.setText(
-            str(self.settings.rename_issue_number_padding))
+        self.leIssueNumPadding.setText(str(self.settings.rename_issue_number_padding))
         if self.settings.rename_use_smart_string_cleanup:
             self.cbxSmartCleanup.setCheckState(QtCore.Qt.Checked)
         if self.settings.rename_extension_based_on_archive:
@@ -236,26 +225,28 @@ class SettingsWindow(QtWidgets.QDialog):
 
         self.configRenamer()
 
-
         try:
-            new_name = self.renamer.determineName('test.cbz')
+            new_name = self.renamer.determineName("test.cbz")
         except Exception as e:
-            QtWidgets.QMessageBox.critical(self, 'Invalid format string!',
-                'Your rename template is invalid!'
-                '<br/><br/>{}<br/><br/>'
-                'Please consult the template help in the '
-                'settings and the documentation on the format at '
-                '<a href=\'https://docs.python.org/3/library/string.html#format-string-syntax\'>'
-                'https://docs.python.org/3/library/string.html#format-string-syntax</a>'.format(e))
+            QtWidgets.QMessageBox.critical(
+                self,
+                "Invalid format string!",
+                "Your rename template is invalid!"
+                "<br/><br/>{}<br/><br/>"
+                "Please consult the template help in the "
+                "settings and the documentation on the format at "
+                "<a href='https://docs.python.org/3/library/string.html#format-string-syntax'>"
+                "https://docs.python.org/3/library/string.html#format-string-syntax</a>".format(e),
+            )
             return
 
         # Copy values from form to settings and save
         self.settings.rar_exe_path = str(self.leRarExePath.text())
-        
+
         # make sure rar program is now in the path for the rar class
         if self.settings.rar_exe_path:
             utils.addtopath(os.path.dirname(self.settings.rar_exe_path))
-            
+
         if not str(self.leNameLengthDeltaThresh.text()).isdigit():
             self.leNameLengthDeltaThresh.setText("0")
 
@@ -264,10 +255,8 @@ class SettingsWindow(QtWidgets.QDialog):
 
         self.settings.check_for_new_version = self.cbxCheckForNewVersion.isChecked()
 
-        self.settings.id_length_delta_thresh = int(
-            self.leNameLengthDeltaThresh.text())
-        self.settings.id_publisher_blacklist = str(
-            self.tePublisherBlacklist.toPlainText())
+        self.settings.id_length_delta_thresh = int(self.leNameLengthDeltaThresh.text())
+        self.settings.id_publisher_blacklist = str(self.tePublisherBlacklist.toPlainText())
 
         self.settings.parse_scan_info = self.cbxParseScanInfo.isChecked()
 
@@ -287,8 +276,7 @@ class SettingsWindow(QtWidgets.QDialog):
         self.settings.apply_cbl_transform_on_bulk_operation = self.cbxApplyCBLTransformOnBatchOperation.isChecked()
 
         self.settings.rename_template = str(self.leRenameTemplate.text())
-        self.settings.rename_issue_number_padding = int(
-            self.leIssueNumPadding.text())
+        self.settings.rename_issue_number_padding = int(self.leIssueNumPadding.text())
         self.settings.rename_use_smart_string_cleanup = self.cbxSmartCleanup.isChecked()
         self.settings.rename_extension_based_on_archive = self.cbxChangeExtension.isChecked()
         self.settings.rename_move_dir = self.cbxMoveFiles.isChecked()
@@ -296,32 +284,25 @@ class SettingsWindow(QtWidgets.QDialog):
 
         self.settings.save()
         QtWidgets.QDialog.accept(self)
-            
+
     def selectRar(self):
         self.selectFile(self.leRarExePath, "RAR")
 
     def clearCache(self):
         ImageFetcher().clearCache()
         ComicVineCacher().clearCache()
-        QtWidgets.QMessageBox.information(
-            self, self.name, "Cache has been cleared.")
+        QtWidgets.QMessageBox.information(self, self.name, "Cache has been cleared.")
 
     def testAPIKey(self):
         if ComicVineTalker().testKey(str(self.leKey.text()).strip()):
-            QtWidgets.QMessageBox.information(
-                self, "API Key Test", "Key is valid!")
+            QtWidgets.QMessageBox.information(self, "API Key Test", "Key is valid!")
         else:
-            QtWidgets.QMessageBox.warning(
-                self, "API Key Test", "Key is NOT valid.")
+            QtWidgets.QMessageBox.warning(self, "API Key Test", "Key is NOT valid.")
 
     def resetSettings(self):
         self.settings.reset()
         self.settingsToForm()
-        QtWidgets.QMessageBox.information(
-            self,
-            self.name,
-            self.name +
-            " have been returned to default values.")
+        QtWidgets.QMessageBox.information(self, self.name, self.name + " have been returned to default values.")
 
     def selectFile(self, control, name):
 
@@ -343,9 +324,9 @@ class SettingsWindow(QtWidgets.QDialog):
         if name == "RAR":
             dialog.setWindowTitle("Find " + name + " program")
         else:
-             dialog.setWindowTitle("Find " + name + " library")
+            dialog.setWindowTitle("Find " + name + " library")
 
-        if (dialog.exec_()):
+        if dialog.exec_():
             fileList = dialog.selectedFiles()
             control.setText(str(fileList[0]))
 
@@ -357,11 +338,9 @@ class SettingsWindow(QtWidgets.QDialog):
         TemplateHelpWin.setModal(False)
         TemplateHelpWin.show()
 
-class TemplateHelpWindow(QtWidgets.QDialog):
 
+class TemplateHelpWindow(QtWidgets.QDialog):
     def __init__(self, parent):
         super(TemplateHelpWindow, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('TemplateHelp.ui'), self)
-
-
+        uic.loadUi(ComicTaggerSettings.getUIFile("TemplateHelp.ui"), self)

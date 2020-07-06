@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import sys
-#import os
+# import sys
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
@@ -23,15 +23,12 @@ from .settings import ComicTaggerSettings
 
 
 class LogWindow(QtWidgets.QDialog):
-
     def __init__(self, parent):
         super(LogWindow, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('logwindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("logwindow.ui"), self)
 
-        self.setWindowFlags(self.windowFlags() |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowMaximizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowMaximizeButtonHint)
 
     def setText(self, text):
         try:

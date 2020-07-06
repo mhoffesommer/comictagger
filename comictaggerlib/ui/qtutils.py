@@ -1,14 +1,14 @@
 """Some utilities for the GUI"""
 
-#import StringIO
+# import StringIO
 
-#from PIL import Image
+# from PIL import Image
 
 from comictaggerlib.settings import ComicTaggerSettings
 
-
 try:
     from PyQt5 import QtGui
+
     qt_available = True
 except ImportError:
     qt_available = False
@@ -55,16 +55,13 @@ if qt_available:
         # And vertical position the same, but with the height dimensions
         vpos = (main_window_size.height() - window.height()) / 2
         # And the move call repositions the window
-        window.move(
-            hpos +
-            main_window_size.left(),
-            vpos +
-            main_window_size.top())
+        window.move(hpos + main_window_size.left(), vpos + main_window_size.top())
 
     try:
         from PIL import Image
         from PIL import WebPImagePlugin
         import io
+
         pil_available = True
     except ImportError:
         pil_available = False
@@ -86,5 +83,5 @@ if qt_available:
                 pass
         # if still nothing, go with default image
         if not success:
-            img.load(ComicTaggerSettings.getGraphic('nocover.png'))
+            img.load(ComicTaggerSettings.getGraphic("nocover.png"))
         return img

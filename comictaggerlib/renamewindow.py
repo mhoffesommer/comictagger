@@ -18,27 +18,23 @@ import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
+from comictaggerlib.ui.qtutils import centerWindowOnParent
+
+from . import utils
+from .comicarchive import MetaDataStyle
+from .filerenamer import FileRenamer
 from .settings import ComicTaggerSettings
 from .settingswindow import SettingsWindow
-from .filerenamer import FileRenamer
-from .comicarchive import MetaDataStyle
-from comictaggerlib.ui.qtutils import  centerWindowOnParent
-from . import utils
 
 
 class RenameWindow(QtWidgets.QDialog):
-
     def __init__(self, parent, comic_archive_list, data_style, settings):
         super(RenameWindow, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('renamewindow.ui'), self)
-        self.label.setText(
-            "Preview (based on {0} tags):".format(
-                MetaDataStyle.name[data_style]))
+        uic.loadUi(ComicTaggerSettings.getUIFile("renamewindow.ui"), self)
+        self.label.setText("Preview (based on {0} tags):".format(MetaDataStyle.name[data_style]))
 
-        self.setWindowFlags(self.windowFlags() |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowMaximizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowMaximizeButtonHint)
 
         self.settings = settings
         self.comic_archive_list = comic_archive_list
@@ -51,10 +47,8 @@ class RenameWindow(QtWidgets.QDialog):
     def configRenamer(self):
         self.renamer = FileRenamer(None)
         self.renamer.setTemplate(self.settings.rename_template)
-        self.renamer.setIssueZeroPadding(
-            self.settings.rename_issue_number_padding)
-        self.renamer.setSmartCleanup(
-            self.settings.rename_use_smart_string_cleanup)
+        self.renamer.setIssueZeroPadding(self.settings.rename_issue_number_padding)
+        self.renamer.setSmartCleanup(self.settings.rename_use_smart_string_cleanup)
 
     def doPreview(self):
         self.rename_list = []
@@ -81,15 +75,17 @@ class RenameWindow(QtWidgets.QDialog):
             try:
                 new_name = self.renamer.determineName(ca.path, ext=new_ext)
             except Exception as e:
-                QtWidgets.QMessageBox.critical(self, 'Invalid format string!',
-                    'Your rename template is invalid!'
-                    '<br/><br/>{}<br/><br/>'
-                    'Please consult the template help in the '
-                    'settings and the documentation on the format at '
-                    '<a href=\'https://docs.python.org/3/library/string.html#format-string-syntax\'>'
-                    'https://docs.python.org/3/library/string.html#format-string-syntax</a>'.format(e))
+                QtWidgets.QMessageBox.critical(
+                    self,
+                    "Invalid format string!",
+                    "Your rename template is invalid!"
+                    "<br/><br/>{}<br/><br/>"
+                    "Please consult the template help in the "
+                    "settings and the documentation on the format at "
+                    "<a href='https://docs.python.org/3/library/string.html#format-string-syntax'>"
+                    "https://docs.python.org/3/library/string.html#format-string-syntax</a>".format(e),
+                )
                 return
-
 
             row = self.twList.rowCount()
             self.twList.insertRow(row)
@@ -98,28 +94,25 @@ class RenameWindow(QtWidgets.QDialog):
             new_name_item = QtWidgets.QTableWidgetItem()
 
             item_text = os.path.split(ca.path)[0]
-            folder_item.setFlags(
-                QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            folder_item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.twList.setItem(row, 0, folder_item)
             folder_item.setText(item_text)
             folder_item.setData(QtCore.Qt.ToolTipRole, item_text)
 
             item_text = os.path.split(ca.path)[1]
-            old_name_item.setFlags(
-                QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            old_name_item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.twList.setItem(row, 1, old_name_item)
             old_name_item.setText(item_text)
             old_name_item.setData(QtCore.Qt.ToolTipRole, item_text)
 
-            new_name_item.setFlags(
-                QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            new_name_item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.twList.setItem(row, 2, new_name_item)
             new_name_item.setText(new_name)
             new_name_item.setData(QtCore.Qt.ToolTipRole, new_name)
 
             dict_item = dict()
-            dict_item['archive'] = ca
-            dict_item['new_name'] = new_name
+            dict_item["archive"] = ca
+            dict_item["new_name"] = new_name
             self.rename_list.append(dict_item)
 
         # Adjust column sizes
@@ -142,13 +135,12 @@ class RenameWindow(QtWidgets.QDialog):
 
     def accept(self):
 
-        progdialog = QtWidgets.QProgressDialog(
-            "", "Cancel", 0, len(self.rename_list), self)
+        progdialog = QtWidgets.QProgressDialog("", "Cancel", 0, len(self.rename_list), self)
         progdialog.setWindowTitle("Renaming Archives")
         progdialog.setWindowModality(QtCore.Qt.WindowModal)
         progdialog.setMinimumDuration(100)
         centerWindowOnParent(progdialog)
-        #progdialog.show()
+        # progdialog.show()
         QtCore.QCoreApplication.processEvents()
 
         for idx, item in enumerate(self.rename_list):
@@ -158,27 +150,27 @@ class RenameWindow(QtWidgets.QDialog):
                 break
             idx += 1
             progdialog.setValue(idx)
-            progdialog.setLabelText(item['new_name'])
+            progdialog.setLabelText(item["new_name"])
             centerWindowOnParent(progdialog)
             QtCore.QCoreApplication.processEvents()
 
-            folder = os.path.dirname(os.path.abspath(item['archive'].path))
+            folder = os.path.dirname(os.path.abspath(item["archive"].path))
             if self.settings.rename_move_dir and len(self.settings.rename_dir.strip()) > 3:
                 folder = self.settings.rename_dir.strip()
 
-            new_abs_path = utils.unique_file(os.path.join(folder, item['new_name']))
+            new_abs_path = utils.unique_file(os.path.join(folder, item["new_name"]))
 
-            if os.path.join(folder, item['new_name']) == item['archive'].path:
-                print(item['new_name'], "Filename is already good!")
+            if os.path.join(folder, item["new_name"]) == item["archive"].path:
+                print(item["new_name"], "Filename is already good!")
                 continue
 
-            if not item['archive'].isWritable(check_rar_status=False):
+            if not item["archive"].isWritable(check_rar_status=False):
                 continue
 
             os.makedirs(os.path.dirname(new_abs_path), 0o777, True)
-            os.rename(item['archive'].path, new_abs_path)
+            os.rename(item["archive"].path, new_abs_path)
 
-            item['archive'].rename(new_abs_path)
+            item["archive"].rename(new_abs_path)
 
         progdialog.hide()
         QtCore.QCoreApplication.processEvents()

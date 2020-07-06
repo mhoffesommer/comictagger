@@ -14,23 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import os
-from operator import itemgetter, attrgetter
+# import os
+from operator import attrgetter, itemgetter
 
+from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import uic
 
-from .settings import ComicTaggerSettings
-from .genericmetadata import GenericMetadata, PageType
 from .comicarchive import MetaDataStyle
 from .coverimagewidget import CoverImageWidget
-#from pageloader import PageLoader
+from .genericmetadata import GenericMetadata, PageType
+from .settings import ComicTaggerSettings
+
+# from pageloader import PageLoader
 
 
 def itemMoveEvents(widget):
-
     class Filter(QObject):
 
         mysignal = pyqtSignal(str)
@@ -77,10 +77,9 @@ class PageListEditor(QWidget):
     def __init__(self, parent):
         super(PageListEditor, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('pagelisteditor.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("pagelisteditor.ui"), self)
 
-        self.pageWidget = CoverImageWidget(
-            self.pageContainer, CoverImageWidget.ArchiveMode)
+        self.pageWidget = CoverImageWidget(self.pageContainer, CoverImageWidget.ArchiveMode)
         gridlayout = QGridLayout(self.pageContainer)
         gridlayout.addWidget(self.pageWidget)
         gridlayout.setContentsMargins(0, 0, 0, 0)
@@ -90,28 +89,17 @@ class PageListEditor(QWidget):
 
         # Add the entries to the manga combobox
         self.comboBox.addItem("", "")
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.FrontCover], PageType.FrontCover)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.InnerCover], PageType.InnerCover)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Advertisement], PageType.Advertisement)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Roundup], PageType.Roundup)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Story], PageType.Story)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Editorial], PageType.Editorial)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Letters], PageType.Letters)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Preview], PageType.Preview)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.BackCover], PageType.BackCover)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Other], PageType.Other)
-        self.comboBox.addItem(
-            self.pageTypeNames[PageType.Deleted], PageType.Deleted)
+        self.comboBox.addItem(self.pageTypeNames[PageType.FrontCover], PageType.FrontCover)
+        self.comboBox.addItem(self.pageTypeNames[PageType.InnerCover], PageType.InnerCover)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Advertisement], PageType.Advertisement)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Roundup], PageType.Roundup)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Story], PageType.Story)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Editorial], PageType.Editorial)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Letters], PageType.Letters)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Preview], PageType.Preview)
+        self.comboBox.addItem(self.pageTypeNames[PageType.BackCover], PageType.BackCover)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Other], PageType.Other)
+        self.comboBox.addItem(self.pageTypeNames[PageType.Deleted], PageType.Deleted)
 
         self.listWidget.itemSelectionChanged.connect(self.changePage)
         itemMoveEvents(self.listWidget).connect(self.itemMoveEvent)
@@ -129,14 +117,14 @@ class PageListEditor(QWidget):
 
     def getNewIndexes(self, movement):
         selection = self.listWidget.selectionModel().selectedRows()
-        selection.sort(reverse=movement>0)
+        selection.sort(reverse=movement > 0)
         current = 0
         newindexes = []
         oldindexes = []
         for x in selection:
             current = x.row()
             oldindexes.append(current)
-            if current + movement >= 0 and current + movement <= self.listWidget.count()-1:
+            if current + movement >= 0 and current + movement <= self.listWidget.count() - 1:
                 if len(newindexes) < 1 or current + movement != newindexes[-1]:
                     current += movement
             else:
@@ -154,18 +142,19 @@ class PageListEditor(QWidget):
                 first = selection[0]
                 continue
 
-            if selection != indexes[i-1][0]+1:
-                selectionRanges.append((first,indexes[i-1][0]))
+            if selection != indexes[i - 1][0] + 1:
+                selectionRanges.append((first, indexes[i - 1][0]))
                 first = selection[0]
 
         selectionRanges.append((first, indexes[-1][0]))
         selection = QItemSelection()
         for x in selectionRanges:
-            selection.merge(QItemSelection(self.listWidget.model().index(x[0], 0), self.listWidget.model().index(x[1], 0)), QItemSelectionModel.Select)
+            selection.merge(
+                QItemSelection(self.listWidget.model().index(x[0], 0), self.listWidget.model().index(x[1], 0)), QItemSelectionModel.Select
+            )
 
         self.listWidget.selectionModel().select(selection, QItemSelectionModel.ClearAndSelect)
         return selectionRanges
-
 
     def moveCurrentUp(self):
         row = self.listWidget.currentRow()
@@ -180,7 +169,6 @@ class PageListEditor(QWidget):
         self.listOrderChanged.emit()
         self.emitFrontCoverChange()
         self.modified.emit()
-
 
     def moveCurrentDown(self):
         row = self.listWidget.currentRow()
@@ -221,9 +209,8 @@ class PageListEditor(QWidget):
         i = self.comboBox.findData(pagetype)
         self.comboBox.setCurrentIndex(i)
 
-        #idx = int(str (self.listWidget.item(row).text()))
-        idx = int(self.listWidget.item(row).data(
-            Qt.UserRole)[0]['Image'])
+        # idx = int(str (self.listWidget.item(row).text()))
+        idx = int(self.listWidget.item(row).data(Qt.UserRole)[0]["Image"])
 
         if self.comic_archive is not None:
             self.pageWidget.setArchive(self.comic_archive, idx)
@@ -232,30 +219,29 @@ class PageListEditor(QWidget):
         frontCover = 0
         for i in range(self.listWidget.count()):
             item = self.listWidget.item(i)
-            page_dict = item.data(Qt.UserRole)[0] #.toPyObject()[0]
-            if 'Type' in page_dict and page_dict[
-                    'Type'] == PageType.FrontCover:
-                frontCover = int(page_dict['Image'])
+            page_dict = item.data(Qt.UserRole)[0]  # .toPyObject()[0]
+            if "Type" in page_dict and page_dict["Type"] == PageType.FrontCover:
+                frontCover = int(page_dict["Image"])
                 break
         return frontCover
 
     def getCurrentPageType(self):
         row = self.listWidget.currentRow()
-        page_dict = self.listWidget.item(row).data(Qt.UserRole)[0] #.toPyObject()[0]
-        if 'Type' in page_dict:
-            return page_dict['Type']
+        page_dict = self.listWidget.item(row).data(Qt.UserRole)[0]  # .toPyObject()[0]
+        if "Type" in page_dict:
+            return page_dict["Type"]
         else:
             return ""
 
     def setCurrentPageType(self, t):
         row = self.listWidget.currentRow()
-        page_dict = self.listWidget.item(row).data(Qt.UserRole)[0] #.toPyObject()[0]
+        page_dict = self.listWidget.item(row).data(Qt.UserRole)[0]  # .toPyObject()[0]
 
         if t == "":
-            if 'Type' in page_dict:
-                del(page_dict['Type'])
+            if "Type" in page_dict:
+                del page_dict["Type"]
         else:
-            page_dict['Type'] = str(t)
+            page_dict["Type"] = str(t)
 
         item = self.listWidget.item(row)
         # wrap the dict in a tuple to keep from being converted to QStrings
@@ -282,16 +268,16 @@ class PageListEditor(QWidget):
         self.listWidget.setCurrentRow(0)
 
     def listEntryText(self, page_dict):
-        text = str(int(page_dict['Image']) + 1)
-        if 'Type' in page_dict:
-            text += " (" + self.pageTypeNames[page_dict['Type']] + ")"
+        text = str(int(page_dict["Image"]) + 1)
+        if "Type" in page_dict:
+            text += " (" + self.pageTypeNames[page_dict["Type"]] + ")"
         return text
 
     def getPageList(self):
         page_list = []
         for i in range(self.listWidget.count()):
             item = self.listWidget.item(i)
-            page_list.append(item.data(Qt.UserRole)[0]) #.toPyObject()[0]
+            page_list.append(item.data(Qt.UserRole)[0])  # .toPyObject()[0]
         return page_list
 
     def emitFrontCoverChange(self):

@@ -14,12 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sqlite3 as lite
-import os
 import datetime
+import os
 import shutil
+import sqlite3 as lite
 import tempfile
+
 import requests
+
+from . import ctversion
+from .settings import ComicTaggerSettings
 
 try:
     from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
@@ -27,24 +31,19 @@ try:
     from PyQt5 import QtGui
 except ImportError:
     # No Qt, so define a few dummy QObjects to help us compile
-    class QObject():
-
+    class QObject:
         def __init__(self, *args):
             pass
 
-    class QByteArray():
+    class QByteArray:
         pass
 
-    class pyqtSignal():
-
+    class pyqtSignal:
         def __init__(self, *args):
             pass
 
         def emit(a, b, c):
             pass
-
-from .settings import ComicTaggerSettings
-from . import ctversion
 
 
 class ImageFetcherException(Exception):
@@ -87,7 +86,7 @@ class ImageFetcher(QObject):
             if image_data is None:
                 try:
                     print(url)
-                    image_data = requests.get(url, headers={'user-agent': 'comictagger/' + ctversion.version}).content
+                    image_data = requests.get(url, headers={"user-agent": "comictagger/" + ctversion.version}).content
                 except Exception as e:
                     print(e)
                     raise ImageFetcherException("Network Error!")
@@ -123,7 +122,7 @@ class ImageFetcher(QObject):
     def create_image_db(self):
 
         # this will wipe out any existing version
-        open(self.db_file, 'w').close()
+        open(self.db_file, "w").close()
 
         # wipe any existing image cache folder too
         if os.path.isdir(self.cache_folder):
@@ -137,12 +136,7 @@ class ImageFetcher(QObject):
 
             cur = con.cursor()
 
-            cur.execute("CREATE TABLE Images(" +
-                        "url TEXT," +
-                        "filename TEXT," +
-                        "timestamp TEXT," +
-                        "PRIMARY KEY (url))"
-                        )
+            cur.execute("CREATE TABLE Images(" + "url TEXT," + "filename TEXT," + "timestamp TEXT," + "PRIMARY KEY (url))")
 
     def add_image_to_cache(self, url, image_data):
 
@@ -154,17 +148,12 @@ class ImageFetcher(QObject):
 
             timestamp = datetime.datetime.now()
 
-            tmp_fd, filename = tempfile.mkstemp(
-                dir=self.cache_folder, prefix="img")
-            f = os.fdopen(tmp_fd, 'w+b')
+            tmp_fd, filename = tempfile.mkstemp(dir=self.cache_folder, prefix="img")
+            f = os.fdopen(tmp_fd, "w+b")
             f.write(image_data)
             f.close()
 
-            cur.execute("INSERT or REPLACE INTO Images VALUES(?, ?, ?)",
-                        (url,
-                         filename,
-                         timestamp)
-                        )
+            cur.execute("INSERT or REPLACE INTO Images VALUES(?, ?, ?)", (url, filename, timestamp))
 
     def get_image_from_cache(self, url):
 
@@ -182,7 +171,7 @@ class ImageFetcher(QObject):
                 image_data = None
 
                 try:
-                    with open(filename, 'rb') as f:
+                    with open(filename, "rb") as f:
                         image_data = f.read()
                         f.close()
                 except IOError as e:

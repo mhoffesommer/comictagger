@@ -14,42 +14,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import sys
-#import os
+# import sys
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from .settings import ComicTaggerSettings
-from .coverimagewidget import CoverImageWidget
 from comictaggerlib.ui.qtutils import reduceWidgetFontSize
-#import utils
+
+from .coverimagewidget import CoverImageWidget
+from .settings import ComicTaggerSettings
+
+# import utils
 
 
 class AutoTagProgressWindow(QtWidgets.QDialog):
-
     def __init__(self, parent):
         super(AutoTagProgressWindow, self).__init__(parent)
 
-        uic.loadUi(
-            ComicTaggerSettings.getUIFile('autotagprogresswindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("autotagprogresswindow.ui"), self)
 
-        self.archiveCoverWidget = CoverImageWidget(
-            self.archiveCoverContainer, CoverImageWidget.DataMode, False)
+        self.archiveCoverWidget = CoverImageWidget(self.archiveCoverContainer, CoverImageWidget.DataMode, False)
         gridlayout = QtWidgets.QGridLayout(self.archiveCoverContainer)
         gridlayout.addWidget(self.archiveCoverWidget)
         gridlayout.setContentsMargins(0, 0, 0, 0)
 
-        self.testCoverWidget = CoverImageWidget(
-            self.testCoverContainer, CoverImageWidget.DataMode, False)
+        self.testCoverWidget = CoverImageWidget(self.testCoverContainer, CoverImageWidget.DataMode, False)
         gridlayout = QtWidgets.QGridLayout(self.testCoverContainer)
         gridlayout.addWidget(self.testCoverWidget)
         gridlayout.setContentsMargins(0, 0, 0, 0)
 
         self.isdone = False
 
-        self.setWindowFlags(self.windowFlags() |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowMaximizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowMaximizeButtonHint)
 
         reduceWidgetFontSize(self.textEdit)
 

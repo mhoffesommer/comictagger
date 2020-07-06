@@ -14,14 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import os
+# import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from .settings import ComicTaggerSettings
-#from settingswindow import SettingsWindow
-#from filerenamer import FileRenamer
-#import utils
+
+# from settingswindow import SettingsWindow
+# from filerenamer import FileRenamer
+# import utils
 
 
 class ExportConflictOpts:
@@ -31,15 +32,13 @@ class ExportConflictOpts:
 
 
 class ExportWindow(QtWidgets.QDialog):
-
     def __init__(self, parent, settings, msg):
         super(ExportWindow, self).__init__(parent)
 
-        uic.loadUi(ComicTaggerSettings.getUIFile('exportwindow.ui'), self)
+        uic.loadUi(ComicTaggerSettings.getUIFile("exportwindow.ui"), self)
         self.label.setText(msg)
 
-        self.setWindowFlags(self.windowFlags() &
-                            ~QtCore.Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
 
         self.settings = settings
 
