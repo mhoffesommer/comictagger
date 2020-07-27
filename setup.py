@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import pathlib
 
 import setuptools.command.build_py
 import setuptools.command.install
@@ -45,7 +46,7 @@ if platform.system() == "Linux":
                            ("/usr/local/share/comictagger",
                                 ["comictaggerlib/graphics/app.png"]),
                           ]
-    
+
 if platform.system() == "Windows":
     win_desktop_folder = os.path.join(os.environ["USERPROFILE"], "Desktop")
     win_appdata_folder = os.path.join(os.environ["APPDATA"], "comictagger")
@@ -54,7 +55,7 @@ if platform.system() == "Windows":
                                 ["desktop-integration/windows/ComicTagger-pip.lnk"]),
                            (win_appdata_folder,
                                 ["windows/app.ico"]),
-                          ]    
+                          ]
 
 if platform.system() == "Darwin":
     mac_app_folder = "/Applications"
@@ -69,7 +70,7 @@ if platform.system() == "Darwin":
                            (os.path.join(mac_app_folder, ct_app_name, "Contents/MacOS"),
                                 ["desktop-integration/mac/main.sh",
                                  "desktop-integration/mac/ComicTagger"]),
-                           ]   
+                           ]
 
 def fileTokenReplace(filename, token, replacement):
     with open(filename, "rt") as fin:
@@ -84,7 +85,7 @@ def fileTokenReplace(filename, token, replacement):
 
 def postInstall(scripts_folder):
     entry_point_script = os.path.join(scripts_folder, "comictagger")
-    
+
     if platform.system() == "Windows":
         # doctor the shortcut for this windows system after deployment
         import winshell
@@ -94,13 +95,13 @@ def postInstall(scripts_folder):
           Icon=(os.path.join(win_appdata_folder, 'app.ico'), 0),
           Description="Launch ComicTagger as installed by PIP"
         )
-        
+
     if platform.system() == "Linux":
         # doctor the script path in the desktop file
         fileTokenReplace(linux_desktop_shortcut,
                     "CTSCRIPT",
                     entry_point_script)
-        
+
     if platform.system() == "Darwin":
         # doctor the plist app version
         fileTokenReplace(mac_app_infoplist,
@@ -108,11 +109,11 @@ def postInstall(scripts_folder):
                     comictaggerlib.ctversion.version)
         # doctor the script path in main.sh
         fileTokenReplace(mac_app_main,
-                    "CTSCRIPT",    
+                    "CTSCRIPT",
                     entry_point_script)
         # Make the launcher script executable
         os.chmod(mac_app_main, 509) #Octal 0o775
-        
+
         # Final install step: create a symlink to Python OS X application
         punt = False
         pythonpath,top = os.path.split(os.path.realpath(sys.executable))
@@ -125,20 +126,20 @@ def postInstall(scripts_folder):
         else:
             print("Failed to find a Resources directory associated with ", str(sys.executable))
             punt = True
-        
+
         if not punt:
             pythonapp = os.path.join(pythonpath, 'Resources','Python.app','Contents','MacOS','Python')
-            if not os.path.exists(pythonapp): 
+            if not os.path.exists(pythonapp):
                 print("Failed to find a Python app in ", str(pythonapp))
                 punt = True
-                   
+
         # remove the placeholder
         os.remove(mac_python_link)
-        if not punt:    
+        if not punt:
             os.symlink(pythonapp, mac_python_link)
         else:
             # We failed, but we can still be functional
-            os.symlink(sys.executable, mac_python_link) 
+            os.symlink(sys.executable, mac_python_link)
 """
 
 setup(
@@ -152,8 +153,8 @@ setup(
     package_data={"comictaggerlib": ["ui/*", "graphics/*"],},
     entry_points=dict(console_scripts=["comictagger=comictaggerlib.main:ctmain"]),
     data_files=platform_data_files,
-    setup_requires=["setuptools_scm"],
     use_scm_version={"write_to": "comictaggerlib/ctversion.py"},
+    version=pathlib.Path("./current_version.txt").read_text().strip(),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
@@ -184,6 +185,6 @@ Features:
 * Reads and writes multiple tagging schemes ( ComicBookLover and ComicRack).
 * Reads and writes RAR and Zip archives (external tools needed for writing RAR)
 * Command line interface (CLI) on all platforms (including Windows), which supports batch operations, and which can be used in native scripts for complex operations.
-* Can run without PyQt5 installed 
+* Can run without PyQt5 installed
 """,
 )
