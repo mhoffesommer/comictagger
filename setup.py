@@ -1,5 +1,10 @@
 # Setup file for comictagger python source  (no wheels yet)
 #
+# The install process will attempt to compile the unrar lib from source.
+# If it succeeds, the unrar lib binary will be installed with the python
+# source.  If it fails, install will just continue.  On most Linux systems it
+# should just work.  (Tested on a Mac system with homebrew, as well)
+#
 # An entry point script called "comictagger" will be created
 #
 # Currently commented out, an experiment at desktop integration.
@@ -150,7 +155,7 @@ setup(
     author_email="comictagger@gmail.com",
     url="https://github.com/comictagger/comictagger",
     packages=["comictaggerlib", "comicapi"],
-    package_data={"comictaggerlib": ["ui/*", "graphics/*"],},
+    package_data={"comictaggerlib": ["ui/*", "graphics/*", "*.so"],},
     entry_points=dict(console_scripts=["comictagger=comictaggerlib.main:ctmain"]),
     data_files=platform_data_files,
     use_scm_version={"write_to": "comictaggerlib/ctversion.py"},
