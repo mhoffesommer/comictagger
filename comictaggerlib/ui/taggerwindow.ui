@@ -1199,6 +1199,7 @@
     <addaction name="actionLiteralSearch"/>
     <addaction name="separator"/>
     <addaction name="actionApplyCBLTransform"/>
+    <addaction name="actionMarkAd"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -1400,6 +1401,14 @@
    </property>
    <property name="toolTip">
     <string>perform a literal search on the series and return the first 50 results</string>
+   </property>
+  </action>
+  <action name="actionMarkAd">
+   <property name="text">
+    <string>Mark Advertisement</string>
+   </property>
+   <property name="toolTip">
+    <string>mark the current page as an advertisement</string>
    </property>
   </action>
  </widget>

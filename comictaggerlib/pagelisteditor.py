@@ -27,6 +27,8 @@ from .coverimagewidget import CoverImageWidget
 from .genericmetadata import GenericMetadata, PageType
 from .settings import ComicTaggerSettings
 
+import sys
+
 # from pageloader import PageLoader
 
 
@@ -79,6 +81,7 @@ class PageListEditor(QWidget):
 
         uic.loadUi(ComicTaggerSettings.getUIFile("pagelisteditor.ui"), self)
 
+        self.setEnabled(True)
         self.pageWidget = CoverImageWidget(self.pageContainer, CoverImageWidget.ArchiveMode)
         gridlayout = QGridLayout(self.pageContainer)
         gridlayout.addWidget(self.pageWidget)
@@ -108,6 +111,15 @@ class PageListEditor(QWidget):
         self.btnDown.clicked.connect(self.moveCurrentDown)
         self.pre_move_row = -1
         self.first_front_page = None
+
+    def toggleAd(self):
+        ad = self.comboBox.findData(PageType.Advertisement)
+        if self.comboBox.currentIndex() == ad:
+            self.comboBox.setCurrentIndex(0)
+            self.changePageType(0)
+        else:
+            self.comboBox.setCurrentIndex(ad)
+            self.changePageType(ad)
 
     def resetPage(self):
         self.pageWidget.clear()
