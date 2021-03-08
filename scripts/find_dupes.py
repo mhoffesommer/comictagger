@@ -8,6 +8,7 @@ import platform
 import shutil
 import signal
 import typing
+import io
 from operator import attrgetter, itemgetter
 from typing import Dict, List
 
@@ -60,11 +61,11 @@ class Duplicate:
         self.digest = blake2b.hexdigest()
 
     def extract(self, directory):
-        archive_type = filetype.archive(self.path)
+        archive_type = filetype.archive_match(self.path)
         if archive_type is not None:
             if archive_type.extension == "zip":
                 archive = zipfile.ZipFile(self.path)
-            elif archive_type.extension == "rar" and rarSupport:
+            elif archive_type.extension == "rar":
                 archive = rarfile.RarFile(self.path)
                 archive.close = lambda: None
             else:
@@ -82,7 +83,7 @@ class Duplicate:
                     self.fileCount += 1
                     file_bytes = archive.read(fileinfo)
 
-                    image_type = filetype.image(archived_file)
+                    image_type = filetype.image_match(archived_file)
                     if image_type is not None:
                         self.imageCount += 1
                         file_hash = hashlib.blake2b(file_bytes, digest_size=16).hexdigest().upper()
@@ -206,27 +207,33 @@ class MainWindow(QtWidgets.QMainWindow):
     def dupe_set_clicked(self, index: QtCore.QModelIndex):
         for f in self.dupe_list.children():
             f.deleteLater()
-        self.dupe_set_list[index.row()].sort(key=lambda k: k.digest)
-        for i, f in enumerate(self.dupe_set_list[index.row()]):
-            color = "black"
-            if i > 0:
-                if self.dupe_set_list[index.row()][i - 1].digest == f.digest:
-                    color = "green"
-            elif i == 0:
-                if len(self.dupe_set_list[index.row()]) > 1:
-                    if self.dupe_set_list[index.row()][i + 1].digest == f.digest:
+
+        if len(self.dupe_set_list) > index.row() and index.row() > 0:
+            self.dupe_set_list[index.row()].sort(key=lambda k: k.digest)
+            for i, f in enumerate(self.dupe_set_list[index.row()]):
+                color = "black"
+                if i > 0:
+                    if self.dupe_set_list[index.row()][i - 1].digest == f.digest:
                         color = "green"
-            ql = DupeImage(duplicate=f, style=f".path {{color: black;}}.hash {{color: {color};}}", parent=self.dupe_list)
-            ql.deleted.connect(self.update_dupes)
-            ql.setMinimumWidth(300)
-            ql.setMinimumHeight(500)
-            self.dupe_list.layout().addWidget(ql)
+                elif i == 0:
+                    if len(self.dupe_set_list[index.row()]) > 1:
+                        if self.dupe_set_list[index.row()][i + 1].digest == f.digest:
+                            color = "green"
+                ql = DupeImage(duplicate=f, style=f".path {{color: black;}}.hash {{color: {color};}}", parent=self.dupe_list)
+                ql.deleted.connect(self.update_dupes)
+                ql.setMinimumWidth(300)
+                ql.setMinimumHeight(500)
+                self.dupe_list.layout().addWidget(ql)
 
     def showEvent(self, event: QtGui.QShowEvent):
         if self.firstRun == 0:
             self.firstRun = 1
 
             self.load_files(self.initFiles)
+            if len(self.dupe_set_list) < 1:
+                print("No duplicates found")
+                QtWidgets.QApplication.quit()
+                exit()
         self.dupe_set_qlist.setSelection(QtCore.QRect(0, 0, 0, 1), QtCore.QItemSelectionModel.ClearAndSelect)
         self.dupe_set_clicked(self.dupe_set_qlist.model().index(0, 0))
 
@@ -260,6 +267,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 cover = ca.getPage(0)
                 comic_list.append((make_key(md), filename, md, cover))
                 max_name_len = len(filename)
+        print()
 
         comic_list.sort(key=itemgetter(0), reverse=False)
 
@@ -303,8 +311,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.dupe_set_list.append(new_set)
 
         self.dupe_set_qlist.setModel(Tree(self.dupe_set_list))
-        print("destroy")
         dialog.close()
+
 
     # def delete_hashes(self):
     #     working_dir = os.path.join(self.tmp, "working")
@@ -601,7 +609,6 @@ class DupeImage(QtWidgets.QWidget):
             if self.duplicate.delete():
                 self.hide()
                 self.deleteLater()
-                print("signal emitted")
                 self.deleted.emit(self.duplicate.path)
 
     def setDuplicate(self, duplicate: Duplicate):
@@ -642,7 +649,6 @@ def delete(dupe_set: List[Duplicate]) -> List[Duplicate]:
 def select_archive(prompt, dupe_set: List[Duplicate]):
     selection = -1
     while selection < 0 or selection >= len(dupe_set):
-        print(len(dupe_set))
         for i in range(len(dupe_set)):
             print(
                 "{0}. {1}: {2.series} #{2.issue:0>3} {2.year}; extras: {3}".format(
