@@ -439,6 +439,13 @@ class TaggerWindow(QtWidgets.QMainWindow):
         self.toolBar.addAction(self.actionClearEntryForm)
         self.toolBar.addAction(self.actionPageBrowser)
 
+        self.actionMarkAd.setShortcut("A")
+        self.actionMarkAd.triggered.connect(self.toggleAd)
+
+    def toggleAd(self):
+        if self.tabWidget.tabText(self.tabWidget.currentIndex()) == "Pages":
+            self.pageListEditor.toggleAd()
+
     def repackageArchive(self):
         ca_list = self.fileSelectionList.getSelectedArchiveList()
         rar_count = 0

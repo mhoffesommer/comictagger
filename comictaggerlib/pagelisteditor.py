@@ -120,6 +120,15 @@ class PageListEditor(QWidget):
         self.pre_move_row = -1
         self.first_front_page = None
 
+    def toggleAd(self):
+        ad = self.comboBox.findData(PageType.Advertisement)
+        if self.comboBox.currentIndex() == ad:
+            self.comboBox.setCurrentIndex(0)
+            self.changePageType(0)
+        else:
+            self.comboBox.setCurrentIndex(ad)
+            self.changePageType(ad)
+
     def resetPage(self):
         self.pageWidget.clear()
         self.comboBox.setDisabled(True)

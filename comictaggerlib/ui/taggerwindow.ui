@@ -1178,6 +1178,7 @@
     <addaction name="actionAutoIdentify"/>
     <addaction name="separator"/>
     <addaction name="actionApplyCBLTransform"/>
+    <addaction name="actionMarkAd"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -1371,6 +1372,14 @@
    </property>
    <property name="statusTip">
     <string>Search online for tags,auto-identify best match, and save to archive</string>
+   </property>
+  </action>
+  <action name="actionMarkAd">
+   <property name="text">
+    <string>Mark Advertisement</string>
+   </property>
+   <property name="toolTip">
+    <string>mark the current page as an advertisement</string>
    </property>
   </action>
  </widget>
