@@ -906,7 +906,6 @@ class TaggerWindow(QtWidgets.QMainWindow):
         # Make a list from the coma delimited tags string
         tmp = self.teTags.toPlainText()
         if tmp is not None:
-
             def striplist(l):
                 return [x.strip() for x in l]
 
@@ -954,6 +953,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
 
         if self.settings.last_opened_folder is not None:
             dialog.setDirectory(self.settings.last_opened_folder)
+        # dialog.setFileMode(QtWidgets.QFileDialog.Directory)
 
         if not folder_mode:
             archive_filter = "Comic archive files (*.cbz *.zip *.cbr *.rar)"

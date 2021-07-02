@@ -20,7 +20,6 @@ try:
 except ImportError:
     pil_available = False
 
-import io
 import os
 import platform
 import struct
@@ -31,8 +30,47 @@ import time
 import zipfile
 
 import natsort
+# from PyPDF2 import PdfFileReader
+try:
+    from unrar import rarfile
+    from unrar import unrarlib
+    from unrar import constants
+    # monkey patch unrarlib to avoid segfaults on Win10
+    if platform.system() == 'Windows':
+        unrarlib.UNRARCALLBACK = ctypes.WINFUNCTYPE(
+            # return type
+            ctypes.c_int,
+            # msg
+            ctypes.c_uint,
+            # UserData
+            ctypes.c_long,
+            # MONKEY PATCH HERE -- use a pointer instead of a long, in unrar code: (LPARAM)(*byte), 
+            # that is a pointer to byte casted to LPARAM
+            # On win10 64bit causes nasty segfaults when used from pyinstaller
+            ctypes.POINTER(ctypes.c_byte),
+            # size
+            ctypes.c_long
+        )
+        RARSetCallback = unrarlib._c_func(unrarlib.RARSetCallback, None,
+                         [unrarlib.HANDLE, unrarlib.UNRARCALLBACK, ctypes.c_long])
+        def _rar_cb(self, msg, user_data, p1, p2):
+            if (msg == constants.UCM_NEEDPASSWORD or
+                msg == constants.UCM_NEEDPASSWORDW):
+                # This is a work around since libunrar doesn't
+                # properly return the error code when files are encrypted
+                self._missing_password = True
+            elif msg == constants.UCM_PROCESSDATA:
+                if self._data is None:
+                    self._data = b''
+                chunk = ctypes.string_at(p1, p2)
+                self._data += chunk
+            return 1
+        rarfile._ReadIntoMemory._callback = _rar_cb
+except Exception as e:
+    print(e)
+    print("WARNING: cannot find libunrar, rar support is disabled")
+    pass
 
-from unrar.cffi import rarfile
 
 from .comet import CoMet
 from .comicbookinfo import ComicBookInfo
@@ -121,8 +159,7 @@ class ZipArchiver:
             return []
 
     def rebuildZipFile(self, exclude_list):
-        """
-        Zip helper func
+        """Zip helper func
 
         This recompresses the zip archive, without the files in the exclude_list
         """
@@ -284,6 +321,10 @@ class RarArchiver:
             return False
 
     def readArchiveFile(self, archive_file):
+
+        # Make sure to escape brackets, since some funky stuff is going on
+        # underneath with "fnmatch"
+        #archive_file = archive_file.replace("[", '[[]')
         entries = []
 
         rarc = self.getRARObj()
@@ -294,6 +335,10 @@ class RarArchiver:
                 tries = tries + 1
                 data = rarc.open(archive_file).read()
                 entries = [(rarc.getinfo(archive_file), data)]
+
+                #shutil.rmtree(tmp_folder, ignore_errors=True)
+
+                #entries = rarc.read_files( archive_file )
 
                 if entries[0][0].file_size != len(entries[0][1]):
                     print(
@@ -409,7 +454,7 @@ class RarArchiver:
         while tries < 7:
             try:
                 tries = tries + 1
-                rarc = rarfile.RarFile(self.path)
+                rarc = rarfile.RarFile( self.path )
 
             except (OSError, IOError) as e:
                 print("getRARObj(): [{0}] {1} attempt#{2}".format(str(e), self.path, tries), file=sys.stderr)
@@ -584,7 +629,12 @@ class ComicArchive:
         return zipfile.is_zipfile(self.path)
 
     def rarTest(self):
-        return rarfile.is_rarfile(self.path)
+        try:
+            rarc = rarfile.RarFile(self.path)
+        except:  # InvalidRARArchive:
+            return False
+        else:
+            return True
 
     def isZip(self):
         return self.archive_type == self.ArchiveType.Zip
@@ -624,17 +674,12 @@ class ComicArchive:
         # Do we even care about extensions??
         ext = os.path.splitext(self.path)[1].lower()
 
-        if (
-            # or self.isFolder() )
-            (self.isZip() or self.isRar() or self.isPdf())
-            and (self.getNumberOfPages() > 0)
-        ):
+        if (self.isZip() or self.isRar()) and (self.getNumberOfPages() > 0):
             return True
         else:
             return False
 
     def readMetadata(self, style):
-
         if style == MetaDataStyle.CIX:
             return self.readCIX()
         elif style == MetaDataStyle.CBI:
@@ -757,12 +802,11 @@ class ComicArchive:
             # seems like some archive creators are on  Windows, and don't know
             # about case-sensitivity!
             if sort_list:
-
                 def keyfunc(k):
                     # hack to account for some weird scanner ID pages
                     # basename=os.path.split(k)[1]
                     # if basename < '0':
-                    # 	k = os.path.join(os.path.split(k)[0], "z" + basename)
+                    #   k = os.path.join(os.path.split(k)[0], "z" + basename)
                     return k.lower()
 
                 files = natsort.natsorted(files, alg=natsort.ns.IC | natsort.ns.I)
@@ -1016,6 +1060,7 @@ class ComicArchive:
                         p["ImageSize"] = str(len(data))
 
     def metadataFromFilename(self, parse_scan_info=True):
+
         metadata = GenericMetadata()
 
         fnp = FileNameParser()
