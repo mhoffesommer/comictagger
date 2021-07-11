@@ -3,6 +3,5 @@ configparser
 natsort
 pathvalidate
 pillow>=4.3.0
-pyinstaller
 requests
 unrar
