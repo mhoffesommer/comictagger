@@ -19,16 +19,26 @@ import sys
 import signal
 import traceback
 import platform
-
+from collections import defaultdict
 from .settings import ComicTaggerSettings
+import comicapi.comicarchive
+from comicapi.plugin_collection import PluginCollection
+import comicapi.plugin
+
 # Need to load setting before anything else
 SETTINGS = ComicTaggerSettings()
+
+comicapi.plugin.plugin_settings['rar'] = defaultdict(str, {
+    "rar_exe_path": SETTINGS.rar_exe_path,
+})
+comicapi.comicarchive.archive_types = PluginCollection(['archive_plugins'], comicapi.plugin.Archiver)
 
 try:
     qt_available = True
     from PyQt5 import QtCore, QtGui, QtWidgets
     from .taggerwindow import TaggerWindow
 except ImportError as e:
+    print(e)
     qt_available = False
 
 

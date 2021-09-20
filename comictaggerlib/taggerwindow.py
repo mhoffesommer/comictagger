@@ -443,7 +443,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
         ca_list = self.fileSelectionList.getSelectedArchiveList()
         rar_count = 0
         for ca in ca_list:
-            if ca.isRar():
+            if ca.archive_type == "RAR":
                 rar_count += 1
 
         if rar_count == 0:
@@ -485,7 +485,7 @@ class TaggerWindow(QtWidgets.QMainWindow):
             success_count = 0
 
             for ca in ca_list:
-                if ca.isRar():
+                if ca.archive_type == "RAR":
                     QtCore.QCoreApplication.processEvents()
                     if progdialog.wasCanceled():
                         break
@@ -675,14 +675,8 @@ class TaggerWindow(QtWidgets.QMainWindow):
 
         self.lblFilename.setText(filename)
 
-        if ca.isZip():
-            self.lblArchiveType.setText("ZIP archive")
-        elif ca.isRar():
-            self.lblArchiveType.setText("RAR archive")
-        elif ca.isFolder():
-            self.lblArchiveType.setText("Folder archive")
-        else:
-            self.lblArchiveType.setText("")
+
+        self.lblArchiveType.setText(ca.archive_type + " archive")
 
         page_count = " ({0} pages)".format(ca.getNumberOfPages())
         self.lblPageCount.setText(page_count)

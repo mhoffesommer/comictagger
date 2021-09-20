@@ -24,6 +24,7 @@ from .settings import ComicTaggerSettings
 from .comicvinecacher import ComicVineCacher
 from .comicvinetalker import ComicVineTalker
 from .imagefetcher import ImageFetcher
+import comicapi.plugin
 from . import utils
 
 
@@ -212,6 +213,7 @@ class SettingsWindow(QtWidgets.QDialog):
         self.settings.rename_extension_based_on_archive = self.cbxChangeExtension.isChecked()
 
         self.settings.save()
+        comicapi.plugin.plugin_settings['rar']['rar_exe_path'] = self.settings.rar_exe_path
         QtWidgets.QDialog.accept(self)
             
     def selectRar(self):

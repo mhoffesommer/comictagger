@@ -14,7 +14,7 @@ if platform.system() == "Windows":
 a = Analysis(['comictagger.py'],
              binaries=binaries,
              datas=[('comictaggerlib/ui/*.ui', 'ui'), ('comictaggerlib/graphics', 'graphics')],
-             hiddenimports=['PIL'],
+             hiddenimports=['PIL', 'comicapi.plugins.folder', 'comicapi.plugins.rar', 'comicapi.plugins', 'comicapi.plugins.zip'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],

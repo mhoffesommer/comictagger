@@ -67,10 +67,7 @@ class RenameWindow(QtWidgets.QDialog):
 
             new_ext = None  # default
             if self.settings.rename_extension_based_on_archive:
-                if ca.isZip():
-                    new_ext = ".cbz"
-                elif ca.isRar():
-                    new_ext = ".cbr"
+                new_ext = "." + ca.archiver.ext
 
             md = ca.readMetadata(self.data_style)
             if md.isEmpty:

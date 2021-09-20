@@ -53,7 +53,7 @@ setup(
     author="ComicTagger team",
     author_email="comictagger@gmail.com",
     url="https://github.com/comictagger/comictagger",
-    packages=["comictaggerlib", "comicapi"],
+    packages=["comictaggerlib", "comicapi", "comicapi.plugins"],
     package_data={
         "comictaggerlib": ["ui/*", "graphics/*"],
     },

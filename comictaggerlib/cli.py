@@ -125,7 +125,6 @@ def display_match_set_for_choice(label, match_set, opts, settings):
             # we know at this point, that the file is all good to go
             ca = ComicArchive(
                 match_set.filename,
-                settings.rar_exe_path,
                 ComicTaggerSettings.getGraphic('nocover.png'))
             md = create_local_metadata(
                 opts, ca, ca.hasMetadata(opts.data_style))
@@ -221,7 +220,6 @@ def process_file_cli(filename, opts, settings, match_results):
 
     ca = ComicArchive(
         filename,
-        settings.rar_exe_path,
         ComicTaggerSettings.getGraphic('nocover.png'))
 
     if not os.path.lexists(filename):
@@ -258,12 +256,8 @@ def process_file_cli(filename, opts, settings, match_results):
             if batch_mode:
                 brief = "{0}: ".format(filename)
 
-            if ca.isZip():
-                brief += "ZIP archive    "
-            elif ca.isRar():
-                brief += "RAR archive    "
-            elif ca.isFolder():
-                brief += "Folder archive "
+
+            brief += "{:<15}".format(ca.archive_type + " archive")
 
             brief += "({0: >3} pages)".format(page_count)
             brief += "  tags:[ "
@@ -498,10 +492,7 @@ def process_file_cli(filename, opts, settings, match_results):
 
         new_ext = None  # default
         if settings.rename_extension_based_on_archive:
-            if ca.isZip():
-                new_ext = ".cbz"
-            elif ca.isRar():
-                new_ext = ".cbr"
+            new_ext = "." + ca.archiver.ext
 
         renamer = FileRenamer(md)
         renamer.setTemplate(settings.rename_template)
@@ -532,7 +523,7 @@ def process_file_cli(filename, opts, settings, match_results):
         if batch_mode:
             msg_hdr = "{0}: ".format(filename)
 
-        if not ca.isRar():
+        if ca.archive_type != "RAR":
             print(msg_hdr + "Archive is not a RAR.", file=sys.stderr)
             return
 

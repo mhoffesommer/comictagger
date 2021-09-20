@@ -271,7 +271,6 @@ class FileSelectionList(QWidget):
 
         ca = ComicArchive(
             path,
-            self.settings.rar_exe_path,
             ComicTaggerSettings.getGraphic('nocover.png'))
 
         if ca.seemsToBeAComicArchive():
@@ -335,12 +334,7 @@ class FileSelectionList(QWidget):
         filename_item.setText(item_text)
         filename_item.setData(Qt.ToolTipRole, item_text)
 
-        if fi.ca.isZip():
-            item_text = "ZIP"
-        elif fi.ca.isRar():
-            item_text = "RAR"
-        else:
-            item_text = ""
+        item_text = fi.ca.archive_type
         type_item.setText(item_text)
         type_item.setData(Qt.ToolTipRole, item_text)
 
