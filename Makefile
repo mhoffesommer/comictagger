@@ -1,5 +1,5 @@
-PIP ?= pip
-VERSION_STR := $(shell python setup.py --version)
+PIP ?= pip3
+VERSION_STR := $(shell python3 setup.py --version)
 
 ifeq ($(OS),Windows_NT)
 	OS_VERSION=win-$(PROCESSOR_ARCHITECTURE)
