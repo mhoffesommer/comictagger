@@ -1,4 +1,6 @@
 language: python
+# Only build tags
+if: tag IS present
 branches:
   only:
     - develop
