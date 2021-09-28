@@ -19,6 +19,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -37,7 +39,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: executable
+          name: "${{ format('ComicTagger-{}', runner.os) }}"
           path: dist/*.zip
       - name: Release
         uses: softprops/action-gh-release@v1
