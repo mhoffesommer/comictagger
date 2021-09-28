@@ -46,9 +46,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         # if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          # Full releases should be
           prerelease: "${{ contains(github.ref, '-') }}"
           draft: true
           files: dist/*.zip
