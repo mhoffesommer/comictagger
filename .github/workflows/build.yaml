@@ -55,4 +55,4 @@ jobs:
           # Full releases should be
           prerelease: "${{ contains(github.ref, '-') }}"
           draft: true
-          files: */*.zip
+          files: "*/*.zip"
