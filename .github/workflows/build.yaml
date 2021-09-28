@@ -39,7 +39,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: "${{ format('ComicTagger-{}', runner.os) }}"
+          name: "${{ format('ComicTagger-{0}', runner.os) }}"
           path: dist/*.zip
       - name: Release
         uses: softprops/action-gh-release@v1
