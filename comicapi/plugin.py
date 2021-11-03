@@ -1,9 +1,23 @@
-from typing import Union, BinaryIO, Mapping, List, Tuple
-from collections import defaultdict
 import io
+from collections import defaultdict
+from typing import BinaryIO, List, Mapping, Tuple, Union
+
+from packaging import version
+
+from comicapi.genericmetadata import GenericMetadata
 
 
-class Archiver:
+class Plugin:
+    """docstring for Plugin"""
+
+    settings_section: str = ""
+    version: version.Version = None
+
+
+class Archiver(Plugin):
+    settings_section: str = ""
+    version: version.Version = None
+
     has_comment: bool = False
     archive_type: str = ""
     archive_ext: str = ""
@@ -71,30 +85,62 @@ class Archiver:
 class UnknownArchiver(Archiver):
     """Unknown implementation"""
 
+    settings_section: str = "Unknown"
+    version: version.Version = version.parse("1.0.0")
+
     def __init__(self, path, settings: Mapping[str, any]):
         super().__init__(path, settings)
         self.path = path
 
-    def getComment(self):
+    def getComment(self) -> str:
         return ""
 
-    def setComment(self, comment):
+    def setComment(self, comment: str) -> bool:
         return False
 
-    def readFile(self, archive_file: str) -> Union[bytearray, bytes, None]:
+    def readFile(self, archive_file: str) -> Union[bytearray, bytes, str]:
         return None
 
-    def writeFile(self, archive_file, data):
+    def writeFile(self, archive_file: str, data: Union[bytearray, bytes, str]) -> bool:
         return False
 
-    def removeFile(self, archive_file):
+    def removeFile(self, archive_file: str) -> bool:
         return False
 
-    def getFilenameList(self):
+    def getFilenameList(self) -> List[str]:
         return []
 
     def isWritable(self) -> bool:
         return False
 
 
+class Metadata(Plugin):
+    settings_section: str = ""
+    version: version.Version = None
+
+    def archiveSupportsMetadata(self, archive: Archiver) -> bool:
+        pass
+
+    def archiveHasMetadata(self, archive: Archiver) -> bool:
+        pass
+
+    def metadataFromString(self, string: str) -> GenericMetadata:
+        pass
+
+    def stringFromMetadata(self, metadata: GenericMetadata) -> str:
+        pass
+
+    def metadataFromArchive(self, archive: Archiver) -> GenericMetadata:
+        pass
+
+    def metadataToArchive(self, metadata: GenericMetadata, archive: Archiver) -> bool:
+        pass
+
+
+# Settings sections should be named after the archive type or the metadata type.
+# Currently this is only a convenience, settings still need to be passed to the constructor manually.
+
+# Example:
+# rar_settings = plugin_settings['rar']
+# comic_rack_settings = plugin_settings['comicrack']
 plugin_settings: defaultdict[str, defaultdict[str, any]] = defaultdict(lambda: defaultdict(str), {})
