@@ -35,19 +35,19 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
         run: |
-          { isort . -c 2>&1 || isort .; } | reviewdog -f=isort -filter-mode=nofilter -reporter=github-pr-review
-
-      - name: Check files using the black formatter
-        uses: rickstaa/action-black@v1
-        id: action_black
-        with:
-          black_args: "."
+          isort .
       - name: Annotate black diff changes using reviewdog
         if: steps.action_black.outputs.is_formatted == 'true'
         uses: reviewdog/action-suggester@v1
         with:
           github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
-          tool_name: black
+          tool_name: isort
+
+      - name: Check files using the black formatter
+        uses: reviewdog/action-black@v2
+        with:
+          github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
+          reporter: github-pr-review
           filter_mode: nofilter
 
       - name: flake8 lint
@@ -55,3 +55,4 @@ jobs:
         with:
           github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
           filter_mode: nofilter
+          reporter: github-pr-review
