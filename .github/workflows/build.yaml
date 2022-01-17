@@ -30,6 +30,13 @@ jobs:
           done
         shell: bash
 
+      - uses: reviewdog/action-setup@v1
+      - name: isort lint
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
+        run: |
+          isort . | reviewdog -f=isort -reporter=github-pr-check
+
       - name: Check files using the black formatter
         uses: rickstaa/action-black@v1
         id: action_black
@@ -41,12 +48,6 @@ jobs:
         with:
           tool_name: black
           github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
-
-      - name: isort lint
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          isort . | reviewdog -f=isort -reporter=github-pr-check
 
       - name: flake8 lint
         uses: reviewdog/action-flake8@v3
