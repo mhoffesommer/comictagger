@@ -1,0 +1,57 @@
+on:
+  workflow_run:
+    workflows: "CI"
+    types:
+      - completed
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.9]
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          ref: refs/remotes/pull/${{pull}}/merge
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: isort.out
+
+      - uses: reviewdog/action-setup@v1
+      - name: Run reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+        reviewdog -name="isort" -f=diff -reporter=github-pr-review <isort.diff
+
+      - name: Check files using the black formatter
+        uses: rickstaa/action-black@v1
+        with:
+          black_args: "."
+      - name: Annotate black diff changes using reviewdog
+        if: steps.action_black.outputs.is_formatted == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: black
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: flake8 Lint
+        if: runner.os == 'Linux'
+        uses: reviewdog/action-flake8@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
