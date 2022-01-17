@@ -30,10 +30,7 @@ jobs:
           done
         shell: bash
 
-      - uses: reviewdog/action-setup@v1
       - name: isort lint
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
         run: |
           isort .
       - name: Annotate black diff changes using reviewdog
@@ -42,6 +39,7 @@ jobs:
         with:
           github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
           tool_name: isort
+          reviewdog_flags: -tee
 
       - name: Check files using the black formatter
         uses: reviewdog/action-black@v2
