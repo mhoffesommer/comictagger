@@ -33,8 +33,7 @@ jobs:
       - name: isort lint
         run: |
           isort .
-      - name: Annotate black diff changes using reviewdog
-        if: steps.action_black.outputs.is_formatted == 'true'
+      - name: Annotate isort diff changes using reviewdog
         uses: reviewdog/action-suggester@v1
         with:
           github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
