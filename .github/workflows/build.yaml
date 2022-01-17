@@ -34,11 +34,11 @@ jobs:
         run: |
           isort . -c >isort.out || true
           isort . --diff >isort.diff
-      - name: upload isort output
+      - name: upload isort diff
         uses: actions/upload-artifact@v2
         with:
-          name: isort.out
-          path: isort.out
+          name: isort.diff
+          path: isort.diff
       - name: Save PR number
         run: |
           echo ${{ github.event.number }} > ./pr
