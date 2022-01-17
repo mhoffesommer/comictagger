@@ -37,7 +37,7 @@ jobs:
       - name: upload isort output
         uses: actions/upload-artifact@v2
         with:
-          name: "${{ format('ComicTagger-{0}', runner.os) }}"
+          name: isort.out
           path: isort.out
       - name: Save PR number
         run: |
