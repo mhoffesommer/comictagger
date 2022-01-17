@@ -1,66 +1,49 @@
+name: Use the data
+
 on:
   workflow_run:
-    workflows: [CI]
+    workflows: [Upload data]
     types:
       - completed
-permissions:
-  contents: read
-  issues: write
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        python-version: [3.9]
-        os: [ubuntu-latest]
-
+  download:
+    runs-on: ubuntu-latest
     steps:
-
-      - uses: actions/download-artifact@v2
+      - name: 'Download artifact'
+        uses: actions/github-script@v5
         with:
-          name: pr
-      - name:
-        id: pr
-        run: pr=$(cat pr);echo "::set-output name=pr::$pr"
+          script: |
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "pr_number"
+            })[0];
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr_number.zip`, Buffer.from(download.data));
 
-      - uses: actions/checkout@v2
+      - name: 'Unzip artifact'
+        run: unzip pr_number.zip
+
+      - name: 'Comment on PR'
+        uses: actions/github-script@v5
         with:
-          fetch-depth: 1
-          ref: refs/remotes/pull/${{steps.pr.pr}}/merge
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: isort.out
-
-      - uses: reviewdog/action-setup@v1
-      - name: Run reviewdog
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          reviewdog -name="isort" -f=diff -reporter=github-pr-review <isort.diff
-
-      - name: Check files using the black formatter
-        uses: rickstaa/action-black@v1
-        id: action_black
-        with:
-          black_args: "."
-      - name: Annotate black diff changes using reviewdog
-        if: steps.action_black.outputs.is_formatted == 'true'
-        uses: reviewdog/action-suggester@v1
-        with:
-          tool_name: black
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: flake8 Lint
-        if: runner.os == 'Linux'
-        uses: reviewdog/action-flake8@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let fs = require('fs');
+            let issue_number = Number(fs.readFileSync('./pr_number'));
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: 'Thank you for the PR!'
+            });
