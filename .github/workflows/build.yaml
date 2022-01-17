@@ -40,10 +40,15 @@ jobs:
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: black
-          github_token: ${{ format('ghp_{0}', 'NvkYXxyfGxqCBjO8sUMRmIwiW3h8ZQ1stUYh') }}
+          github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
 
-      - name: flake8 Lint
-        if: runner.os == 'Linux'
+      - name: isort lint
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          isort . | reviewdog -f=isort -reporter=github-pr-check
+
+      - name: flake8 lint
         uses: reviewdog/action-flake8@v3
         with:
-          github_token: ${{ format('ghp_{0}', 'NvkYXxyfGxqCBjO8sUMRmIwiW3h8ZQ1stUYh') }}
+          github_token: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
