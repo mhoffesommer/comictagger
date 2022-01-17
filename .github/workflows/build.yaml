@@ -32,7 +32,7 @@ jobs:
 
       - name: Run CI
         run: |
-          isort . -c >isort.out
+          isort . -c >isort.out || true
           isort . --diff >isort.diff
       - name: upload isort output
         uses: actions/upload-artifact@v2
