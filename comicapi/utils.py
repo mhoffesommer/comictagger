@@ -14,19 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import codecs
-import locale
-import os
-import platform
-import re
 import sys
-import unicodedata
-from collections import defaultdict
 
+import os
+import re
+import platform
+import locale
+import codecs
 import pycountry
+from collections import defaultdict
+import unicodedata
+
+
 
 
 class UtilsVars:
+
     already_fixed_encoding = False
 
 
@@ -45,6 +48,7 @@ def indent(elem, level=0):
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
+
 
 
 def get_actual_preferred_encoding():
@@ -104,7 +108,8 @@ def add_to_path(dirname):
 
         # verify that path doesn't already contain the given dirname
         tmpdirname = re.escape(dirname)
-        pattern = r"(^|{sep}){dir}({sep}|$)".format(dir=tmpdirname, sep=os.pathsep)
+        pattern = r"(^|{sep}){dir}({sep}|$)".format(
+            dir=tmpdirname, sep=os.pathsep)
 
         match = re.search(pattern, os.environ["PATH"])
         if not match:
@@ -170,7 +175,7 @@ def remove_articles(text):
         "so",
         "the",
         "the",
-        "with",
+        "with"
     ]
     new_text = ""
     for word in text.split(" "):
@@ -194,7 +199,7 @@ def sanitize_title(text):
     # remove extra space and articles and all lower case
     text = remove_articles(text).lower().strip()
 
-    return text
+    return (text)
 
 
 def unique_file(file_name):
@@ -203,7 +208,8 @@ def unique_file(file_name):
     while True:
         if not os.path.lexists(file_name):
             return file_name
-        file_name = file_name_parts[0] + " (" + str(counter) + ")" + file_name_parts[1]
+        file_name = file_name_parts[0] + " (" + str(counter) + ")" \
+        + file_name_parts[1]
         counter += 1
 
 

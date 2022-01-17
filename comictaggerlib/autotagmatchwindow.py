@@ -20,8 +20,8 @@ from typing import List, Optional
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from comicapi.comicarchive import MetaDataStyle
-from comictaggerlib.coverimagewidget import CoverImageWidget
 from comictaggerlib.resulttypes import MultipleMatch
+from comictaggerlib.coverimagewidget import CoverImageWidget
 from comictaggerlib.settings import ComicTaggerSettings
 from comictaggerlib.ui.qtutils import reduce_widget_font_size
 
