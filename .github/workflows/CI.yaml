@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-          ref: refs/remotes/pull/${{steps.pr.outputs.pr}}/merge
+          ref: refs/pull/${{steps.pr.outputs.pr}}/merge
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
