@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-          ref: refs/remotes/pull/${{pull}}/merge
+          ref: refs/remotes/pull/${{ github.event.number }}/merge
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -40,3 +40,11 @@ jobs:
         with:
           name: "${{ format('ComicTagger-{0}', runner.os) }}"
           path: isort.out
+      - name: Save PR number
+        run: |
+          mkdir -p ./pr
+          echo ${{ github.event.number }} > ./pr
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pr
+          path: pr

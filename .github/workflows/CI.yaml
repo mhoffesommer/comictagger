@@ -16,10 +16,18 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: pr
+      - name:
+        id: pr
+        run: pr=$(cat pr);echo "::set-output name=pr::$pr"
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-          ref: refs/remotes/pull/${{pull}}/merge
+          ref: refs/remotes/pull/${{steps.pr.pr}}/merge
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -39,6 +47,7 @@ jobs:
 
       - name: Check files using the black formatter
         uses: rickstaa/action-black@v1
+        id: action_black
         with:
           black_args: "."
       - name: Annotate black diff changes using reviewdog
