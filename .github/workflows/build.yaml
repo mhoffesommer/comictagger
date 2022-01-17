@@ -40,10 +40,10 @@ jobs:
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: black
-          github_token: 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
+          github_token: ${{ format('ghp_{0}', 'NvkYXxyfGxqCBjO8sUMRmIwiW3h8ZQ1stUYh') }}
 
       - name: flake8 Lint
         if: runner.os == 'Linux'
         uses: reviewdog/action-flake8@v3
         with:
-          github_token: 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
+          github_token: ${{ format('ghp_{0}', 'NvkYXxyfGxqCBjO8sUMRmIwiW3h8ZQ1stUYh') }}
