@@ -84,7 +84,6 @@ class IdentifyThread(QtCore.QThread):
 
 
 class VolumeSelectionWindow(QtWidgets.QDialog):
-
     def __init__(
         self,
         parent,

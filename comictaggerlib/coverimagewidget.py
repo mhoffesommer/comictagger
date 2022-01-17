@@ -32,7 +32,7 @@ from .settings import ComicTaggerSettings
 
 
 def clickable(widget):
-    """ Allow a label to be clickable"""
+    """Allow a label to be clickable"""
 
     class Filter(QtCore.QObject):
 

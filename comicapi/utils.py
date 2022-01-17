@@ -27,6 +27,7 @@ import pycountry
 
 
 class UtilsVars:
+
     already_fixed_encoding = False
 
 
