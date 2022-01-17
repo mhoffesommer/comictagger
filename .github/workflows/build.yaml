@@ -41,7 +41,6 @@ jobs:
           path: isort.out
       - name: Save PR number
         run: |
-          mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr
       - uses: actions/upload-artifact@v2
         with:
