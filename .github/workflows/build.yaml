@@ -35,7 +35,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
         run: |
-          { isort . -c 2>&1 || isort .; } | reviewdog -f=isort -filter-mode=nofilter -reporter=github-pr-check
+          { isort . -c 2>&1 || isort .; } | reviewdog -f=isort -filter-mode=nofilter -reporter=github-pr-review
 
       - name: Check files using the black formatter
         uses: rickstaa/action-black@v1
