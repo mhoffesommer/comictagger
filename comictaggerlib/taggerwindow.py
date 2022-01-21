@@ -513,7 +513,7 @@ Please choose options below, and select OK.
             + self.appName
             + f" v{self.version}"
             + "<br>"
-            + "&copy;2014-2018 ComicTagger Devs<br><br>"
+            + "&copy;2014-2022 ComicTagger Devs<br><br>"
             + f"<a href='{website}'>{website}</a><br><br>"
             + f"<a href='mailto:{email}'>{email}</a><br><br>"
             + f"License: <a href='{license_link}'>{license_name}</a>"

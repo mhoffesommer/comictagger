@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
 jobs:
-  build:
+  lint:
     env:
       token_github: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
     runs-on: ${{ matrix.os }}
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -32,10 +32,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m pip install -r requirements_dev.txt
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
-            python3 -m pip install -r "$requirement"
+            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
           done
         shell: bash
 
@@ -50,7 +50,7 @@ jobs:
           filter_mode: nofilter
 
       - name: Check files using the black formatter
-        uses: reviewdog/action-black@v2
+        uses: reviewdog/action-black@v3
         with:
           github_token: ${{ env.token_github }}
           reporter: github-pr-review
@@ -62,3 +62,53 @@ jobs:
           github_token: ${{ env.token_github }}
           filter_mode: nofilter
           reporter: github-pr-review
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.9]
+        os: [ubuntu-latest, macos-10.15, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          requirement_files: requirements.txt  # this is optional
+
+      - uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
+          for requirement in requirements-*.txt; do
+            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
+          done
+        shell: bash
+
+      - name: Install Windows dependencies
+        run: |
+          choco install -y zip
+        if: runner.os == 'Windows'
+
+      - name: build
+        run: |
+          make pydist
+          make dist
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        if: runner.os != 'Linux' # linux binary currently has a segfault when running on latest fedora
+        with:
+          name: "${{ format('ComicTagger-{0}', runner.os) }}"
+          path: dist/*.zip
