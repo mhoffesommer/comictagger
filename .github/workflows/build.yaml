@@ -30,14 +30,23 @@ jobs:
       - uses: syphar/restore-pip-download-cache@v1
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
-      - name: Install dependencies
+      - name: Install python dependencies
         run: |
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
             python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
           done
-        shell: bash
+        if: runner.os != 'Windows'
+
+      - name: Install windows python dependencies
+        run: |
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
+          foreach ($requirement in ls 'requirements-*.txt') {
+            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
+          }
+        if: runner.os == 'Windows'
 
       - name: isort lint
         run: |
@@ -87,15 +96,23 @@ jobs:
       - uses: syphar/restore-pip-download-cache@v1
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
-      - name: Install dependencies
+      - name: Install python dependencies
         run: |
-          python3 -m pip --version
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
             python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
           done
-        shell: bash
+        if: runner.os != 'Windows'
+
+      - name: Install windows python dependencies
+        run: |
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
+          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
+          foreach ($requirement in ls 'requirements-*.txt') {
+            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
+          }
+        if: runner.os == 'Windows'
 
       - name: Install Windows dependencies
         run: |
