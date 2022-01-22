@@ -98,6 +98,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
+          python3 -m pip --version
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
@@ -107,6 +108,7 @@ jobs:
 
       - name: Install windows python dependencies
         run: |
+          python3 -m pip --version
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           foreach ($requirement in ls 'requirements-*.txt') {
