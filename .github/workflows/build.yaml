@@ -98,7 +98,11 @@ jobs:
 
       - name: Install python dependencies
         run: |
+          which pip
+          which python3
+          which python
           python3 -m pip --version
+          pip --version
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
@@ -108,7 +112,11 @@ jobs:
 
       - name: Install windows python dependencies
         run: |
+          (Get-Command pip).Definition
+          (Get-Command python3).Definition
+          (Get-Command python).Definition
           python3 -m pip --version
+          pip --version
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
           python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           foreach ($requirement in ls 'requirements-*.txt') {
@@ -123,9 +131,25 @@ jobs:
 
       - name: build
         run: |
+          (Get-Command pip).Definition
+          (Get-Command python3).Definition
+          (Get-Command python).Definition
+          python3 -m pip --version
           pip --version
           make pydist
           make dist
+        if: runner.os == 'Windows'
+
+      - name: build
+        run: |
+          which pip
+          which python3
+          which python
+          python3 -m pip --version
+          pip --version
+          make pydist
+          make dist
+        if: runner.os != 'Windows'
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
