@@ -1,13 +1,14 @@
 name: CI
 
+env:
+  PIP: pip
+  PYTHON: python
 on:
   pull_request:
 jobs:
   lint:
     env:
       token_github: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
-      PIP: pip
-      PYTHON: python
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
