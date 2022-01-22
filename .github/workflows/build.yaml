@@ -6,6 +6,8 @@ jobs:
   lint:
     env:
       token_github: ${{ format('ghp_{0}', 'TRKLdIovihETZaebx3XaR6o0acvhmn24df8L') }}
+      PIP: pip
+      PYTHON: python
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -30,23 +32,14 @@ jobs:
       - uses: syphar/restore-pip-download-cache@v1
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
-      - name: Install python dependencies
+      - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
+          python -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
+          python -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
-            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
+            python -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
           done
-        if: runner.os != 'Windows'
-
-      - name: Install windows python dependencies
-        run: |
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
-          foreach ($requirement in ls 'requirements-*.txt') {
-            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
-          }
-        if: runner.os == 'Windows'
+        shell: bash
 
       - name: isort lint
         run: |
@@ -96,33 +89,14 @@ jobs:
       - uses: syphar/restore-pip-download-cache@v1
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
-      - name: Install python dependencies
+      - name: Install dependencies
         run: |
-          which pip
-          which python3
-          which python
-          python3 -m pip --version
-          pip --version
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
+          python -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
+          python -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
           for requirement in requirements-*.txt; do
-            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
+            python -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
           done
-        if: runner.os != 'Windows'
-
-      - name: Install windows python dependencies
-        run: |
-          (Get-Command pip).Definition
-          (Get-Command python3).Definition
-          (Get-Command python).Definition
-          python3 -m pip --version
-          pip --version
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements_dev.txt
-          python3 -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
-          foreach ($requirement in ls 'requirements-*.txt') {
-            python3 -m pip install --upgrade --upgrade-strategy eager -r "$requirement"
-          }
-        if: runner.os == 'Windows'
+        shell: bash
 
       - name: Install Windows dependencies
         run: |
@@ -131,25 +105,8 @@ jobs:
 
       - name: build
         run: |
-          (Get-Command pip).Definition
-          (Get-Command python3).Definition
-          (Get-Command python).Definition
-          python3 -m pip --version
-          pip --version
           make pydist
           make dist
-        if: runner.os == 'Windows'
-
-      - name: build
-        run: |
-          which pip
-          which python3
-          which python
-          python3 -m pip --version
-          pip --version
-          make pydist
-          make dist
-        if: runner.os != 'Windows'
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
