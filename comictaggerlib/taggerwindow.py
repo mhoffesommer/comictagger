@@ -1046,30 +1046,30 @@ class TaggerWindow(QtWidgets.QMainWindow):
     def commitMetadata(self):
 
         if self.metadata is not None and self.comic_archive is not None:
-            reply = QtWidgets.QMessageBox.question(
-                self,
-                self.tr("Save Tags"),
-                self.tr("Are you sure you wish to save " + MetaDataStyle.name[self.save_data_style] + " tags to this archive?"),
-                QtWidgets.QMessageBox.Yes,
-                QtWidgets.QMessageBox.No,
-            )
+            # reply = QtWidgets.QMessageBox.question(
+            #    self,
+            #    self.tr("Save Tags"),
+            #    self.tr("Are you sure you wish to save " + MetaDataStyle.name[self.save_data_style] + " tags to this archive?"),
+            #    QtWidgets.QMessageBox.Yes,
+            #    QtWidgets.QMessageBox.No,
+            #)
 
-            if reply == QtWidgets.QMessageBox.Yes:
-                QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
-                self.formToMetadata()
+            #if reply == QtWidgets.QMessageBox.Yes:
+            QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+            self.formToMetadata()
 
-                success = self.comic_archive.writeMetadata(self.metadata, self.save_data_style)
-                self.comic_archive.loadCache([MetaDataStyle.CBI, MetaDataStyle.CIX])
-                QtWidgets.QApplication.restoreOverrideCursor()
+            success = self.comic_archive.writeMetadata(self.metadata, self.save_data_style)
+            self.comic_archive.loadCache([MetaDataStyle.CBI, MetaDataStyle.CIX])
+            QtWidgets.QApplication.restoreOverrideCursor()
 
-                if not success:
-                    QtWidgets.QMessageBox.warning(self, self.tr("Save failed"), self.tr("The tag save operation seemed to fail!"))
-                else:
-                    self.clearDirtyFlag()
-                    self.updateInfoBox()
-                    self.updateMenus()
-                    # QtWidgets.QMessageBox.information(self, self.tr("Yeah!"), self.tr("File written."))
-                self.fileSelectionList.updateCurrentRow()
+            if not success:
+                QtWidgets.QMessageBox.warning(self, self.tr("Save failed"), self.tr("The tag save operation seemed to fail!"))
+            else:
+                self.clearDirtyFlag()
+                self.updateInfoBox()
+                self.updateMenus()
+                # QtWidgets.QMessageBox.information(self, self.tr("Yeah!"), self.tr("File written."))
+            self.fileSelectionList.updateCurrentRow()
 
         else:
             QtWidgets.QMessageBox.information(self, self.tr("Whoops!"), self.tr("No data to commit!"))
@@ -1677,6 +1677,15 @@ class TaggerWindow(QtWidgets.QMainWindow):
         ii.setNameLengthDeltaThreshold(dlg.nameLengthMatchTolerance)
 
         matches = ii.search()
+
+        if ii.search_result == ii.ResultNoMatches and md.series:
+            # if series ends in a ' (nnnn)' year then chop that off & run the search again...
+            parts=re.match('^(.+) \(\d{4}\)$',md.series)
+            if not parts:
+                parts=re.match('^(.+) \(\d{4}-\)$',md.series)
+            if parts:
+                md.series=parts.group(1)
+                matches = ii.search()
 
         result = ii.search_result
 

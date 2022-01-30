@@ -32,11 +32,12 @@ import zipfile
 import natsort
 # from PyPDF2 import PdfFileReader
 try:
-    from unrar import rarfile
-    from unrar import unrarlib
-    from unrar import constants
+    #from unrar import rarfile
+    #from unrar import unrarlib
+    #from unrar import constants
+    import rarfile
     # monkey patch unrarlib to avoid segfaults on Win10
-    if platform.system() == 'Windows':
+    if platform.system() == 'Windows' and False:
         unrarlib.UNRARCALLBACK = ctypes.WINFUNCTYPE(
             # return type
             ctypes.c_int,
@@ -809,7 +810,14 @@ class ComicArchive:
                     #   k = os.path.join(os.path.split(k)[0], "z" + basename)
                     return k.lower()
 
+                # natsort does weird stuff if there are entries like "<nums>-<nums>" in it
+                # so as a hack I'm temporarily replacing all '-' with '*'
+                files=[f.replace('-','*') for f in files]
+
                 files = natsort.natsorted(files, alg=natsort.ns.IC | natsort.ns.I)
+
+                # undo replacement
+                files=[f.replace('*','-') for f in files]
 
             # make a sub-list of image files
             self.page_list = []
@@ -884,7 +892,10 @@ class ComicArchive:
             if raw_cix is None or raw_cix == "":
                 self.cix_md = GenericMetadata()
             else:
-                self.cix_md = ComicInfoXml().metadataFromString(raw_cix)
+                try:
+                    self.cix_md = ComicInfoXml().metadataFromString(raw_cix)
+                except:
+                    self.cix_md = GenericMetadata()
 
             # validate the existing page list (make sure count is correct)
             if len(self.cix_md.pages) != 0:

@@ -17,6 +17,7 @@
 # import sys
 # import time
 # import os
+import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import QUrl, pyqtSignal
@@ -60,6 +61,21 @@ class SearchThread(QtCore.QThread):
                 self.cv_search_results = comicVine.literalSearchForSeries(self.series_name, callback=self.prog_callback)
             else:
                 self.cv_search_results = comicVine.searchForSeries(self.series_name, callback=self.prog_callback, refresh_cache=self.refresh)
+
+            if len(self.cv_search_results) == 0 and not self.cv_error:
+                # if series ends in a ' (nnnn)' year then chop that off & run the search again...
+                parts=re.match('^(.+) \(\d{4}\)$',self.series_name)
+                if not parts:
+                    parts=re.match('^(.+) \(\d{4}-\)$',self.series_name)
+                if parts:
+                    self.series_name=parts.group(1)
+                    print('Retrying',self.series_name)
+
+                    if self.literal:
+                        self.cv_search_results = comicVine.literalSearchForSeries(self.series_name, callback=self.prog_callback)
+                    else:
+                        self.cv_search_results = comicVine.searchForSeries(self.series_name, callback=self.prog_callback, refresh_cache=self.refresh)
+
         except ComicVineTalkerException as e:
             self.cv_search_results = []
             self.cv_error = True
